@@ -4,6 +4,7 @@ const DiscordJS = require("discord.js");
 module.exports = {
 	name: "updatecron",
 	description: "Updates the CRON selected.",
+	userPermissions: ["ADMINISTRATOR"],
 	options: [
 		{
 			name: "id",
@@ -33,17 +34,23 @@ module.exports = {
 	async runSlash(Client, interaction) {
 		let isMemberAdmin = interaction.memberPermissions.has("ADMINISTRATOR");
 
+		// Commande seulement disponible aux administrateurs
 		if (isMemberAdmin == true) {
+			// Récupération des données envoyées par l'utilisateur
 			const sentId = interaction.options.getString("id");
 			let sentChannel = interaction.options.getChannel("channel");
 			let sentTime = interaction.options.getString("time");
 			let sentMessage = interaction.options.getString("message");
 
+			// Regex qui permet de respecter le format HH:MM
 			let timeRegex = "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$";
 
+			// Si le format de l'ID est respecté
 			if (sentId.match(/^[0-9a-fA-F]{24}$/)) {
+				// On récupère les données pour l'ID envoyé par l'utilisateur
 				const findByIdResults = await cronSchema.findById({ _id: sentId });
 
+				// Si on récupère des données
 				if (findByIdResults != null) {
 					const post = findByIdResults;
 					const { _id, time, message, guildId, channelId, isActive } = post;

@@ -20,8 +20,48 @@ module.exports = {
 			}
 		);
 
-		const devGuild = await Client.guilds.cache.get("646033280499580948");
-		devGuild.commands.set(Client.commands.map((cmd) => cmd));
+		// Constantes temporaires pour le développement avec l'ID du serveur
+		const guild = await Client.guilds.cache.get("646033280499580948");
+		let test = Client.commands.map((cmd) => cmd);
+
+		guild.commands.set(test).then((cmd) => {
+			const getRoles = (commandName) => {
+				const permissions = test.find(
+					(x) => x.name === commandName
+				).userPermissions;
+
+				if (!permissions) return null;
+				return guild.roles.cache.filter(
+					(x) => x.permissions.has(permissions) && !x.managed
+				);
+			};
+
+			const fullPermissions = cmd.reduce((accumulator, x) => {
+				const roles = getRoles(x.name);
+				if (!roles) return accumulator;
+
+				const permissions = roles.reduce((a, v) => {
+					return [
+						...a,
+						{
+							id: v.id,
+							type: "ROLE",
+							permission: true,
+						},
+					];
+				}, []);
+
+				return [
+					...accumulator,
+					{
+						id: x.id,
+						permissions,
+					},
+				];
+			}, []);
+
+			guild.commands.permissions.set({ fullPermissions });
+		});
 
 		const checkForCRON = async () => {
 			// Récupérer tous les CRON de la base de données
@@ -41,6 +81,7 @@ module.exports = {
 					continue;
 				}
 
+				// Récupérer les minutes et heures
 				let hours = time.split(":")[0];
 				let minutes = time.split(":")[1];
 

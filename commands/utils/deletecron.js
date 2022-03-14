@@ -4,6 +4,7 @@ const DiscordJS = require("discord.js");
 module.exports = {
 	name: "deletecron",
 	description: "Deletes the CRON selected.",
+	userPermissions: ["ADMINISTRATOR"],
 	options: [
 		{
 			name: "id",
@@ -15,6 +16,7 @@ module.exports = {
 	async runSlash(Client, interaction) {
 		let isMemberAdmin = interaction.memberPermissions.has("ADMINISTRATOR");
 
+		// Commande seulement disponible aux administrateurs
 		if (isMemberAdmin == true) {
 			const sentId = interaction.options.getString("id");
 

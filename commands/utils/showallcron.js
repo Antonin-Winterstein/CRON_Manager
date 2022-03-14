@@ -3,9 +3,11 @@ const cronSchema = require("../../models/cronSchema");
 module.exports = {
 	name: "showallcron",
 	description: "Shows all the CRONs activated on the server.",
+	userPermissions: ["ADMINISTRATOR"],
 	async runSlash(Client, interaction) {
 		let isMemberAdmin = interaction.memberPermissions.has("ADMINISTRATOR");
 
+		// Commande seulement disponible aux administrateurs
 		if (isMemberAdmin == true) {
 			const findResults = await cronSchema.find({
 				guildId: interaction.guildId,

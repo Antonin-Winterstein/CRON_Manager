@@ -8,7 +8,7 @@ module.exports = {
 	// },
 	runSlash: (Client, interaction) => {
 		const embed = new MessageEmbed()
-			.setTitle("Pong!")
+			.setTitle("🏓 Pong!")
 			.setThumbnail(Client.user.displayAvatarURL())
 			.addFields(
 				{ name: "Latency", value: `\`${Client.ws.ping}ms\``, inline: true },
