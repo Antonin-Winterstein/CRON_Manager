@@ -2,19 +2,31 @@ const { MessageEmbed } = require("discord.js");
 
 module.exports = {
 	name: "ping",
-	description: "This is a ping command.",
-	// run: (Client, message, args) => {
+	category: "utils",
+	description: "Shows the ping.",
+	// run(Client, message, args) {
 	// 	message.channel.send("Pong!");
 	// },
-	runSlash: (Client, interaction) => {
+	async runInteraction(Client, interaction) {
+		const tryPong = await interaction.reply({
+			content: "We're trying to pong... wait a minute!",
+			fetchReply: true,
+		});
+
 		const embed = new MessageEmbed()
 			.setTitle("🏓 Pong!")
 			.setThumbnail(Client.user.displayAvatarURL())
 			.addFields(
-				{ name: "Latency", value: `\`${Client.ws.ping}ms\``, inline: true },
 				{
-					name: "Uptime",
-					value: `<t:${parseInt(Client.readyTimestamp / 1000)}:R>`,
+					name: "API Latency",
+					value: `\`\`\`${Client.ws.ping}ms\`\`\``,
+					inline: true,
+				},
+				{
+					name: "BOT Latency",
+					value: `\`\`\`${
+						tryPong.createdTimestamp - interaction.createdTimestamp
+					}ms\`\`\``,
 					inline: true,
 				}
 			)
@@ -24,6 +36,6 @@ module.exports = {
 				iconURL: interaction.user.displayAvatarURL(),
 			});
 
-		interaction.reply({ embeds: [embed] });
+		interaction.editReply({ content: " ", embeds: [embed] });
 	},
 };

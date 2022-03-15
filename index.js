@@ -7,6 +7,7 @@ const Client = new DiscordJS.Client({
 });
 require("dotenv").config();
 const mongoose = require("mongoose");
+const Logger = require("./utils/Logger");
 
 Client.commands = new DiscordJS.Collection();
 
@@ -14,29 +15,31 @@ Client.commands = new DiscordJS.Collection();
 	require(`./utils/handlers/${handler}`)(Client);
 });
 
+// Informations et contrôle sur le processus avec renvoi de messages d'erreur
+process.on("exit", (code) => {
+	Logger.client(`The process stoppeed with the code: ${code}!`);
+});
+process.on("uncaughtException", (err, origin) => {
+	Logger.error(`UNCAUGHT_EXCEPTION: ${err}`);
+	console.error(`Origin: ${origin}`);
+});
+process.on("unhandledRejection", (reason, promise) => {
+	Logger.warn(`UNHANDLED_REJECTION: ${reason}`);
+	console.log(promise);
+});
+process.on("warning", (...args) => Logger.warn(...args));
+
 // Connexion à MongoDB
 mongoose
 	.connect(process.env.MONGO_URI, {
 		keepAlive: true,
 	})
 	.then(() => {
-		console.log("Connected to database.");
+		Logger.client("- connected to database.");
 	})
 	.catch((err) => {
-		console.log(err);
+		Logger.error(err);
 	});
-
-// Informations et contrôle sur le processus avec renvoi de messages d'erreur
-process.on("exit", (code) => {
-	console.log(`The process stoppeed with the code: ${code}!`);
-});
-process.on("uncaughtException", (err, origin) => {
-	console.log(`UNCAUGHT_EXCEPTION: ${err}`, `Origin: ${origin}`);
-});
-process.on("unhandledRejection", (reason, promise) => {
-	console.log(`UNHANDLED_REJECTION: ${reason}\n-----\n`, promise);
-});
-process.on("warning", (...args) => console.log(...args));
 
 // Connexion du bot
 Client.login(process.env.DISCORD_TOKEN);
