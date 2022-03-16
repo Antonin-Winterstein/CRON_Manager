@@ -4,8 +4,11 @@ const DiscordJS = require("discord.js");
 module.exports = {
 	name: "createcron",
 	category: "cron",
-	description: "Defines a CRON to a specific hour.",
+	description:
+		"Creates a CRON that sends a message to a specific hour (format: HH:mm) in a specific channel.",
 	userPermissions: ["ADMINISTRATOR"],
+	usage: "createcron [channel] [time] [message]",
+	examples: ["createcron [yourchannel] [09:21] [Hello World!]"],
 	options: [
 		{
 			name: "channel",

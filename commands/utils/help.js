@@ -6,7 +6,11 @@ const commandFolder = readdirSync("./commands");
 module.exports = {
 	name: "help",
 	category: "utils",
-	description: "Displays the help panel with all available commands.",
+	description:
+		"Displays the help panel with all available commands filtered by category.",
+	userPermissions: ["SEND_MESSAGES"],
+	usage: "help <command>",
+	examples: ["help", "help <createcron>", "help <showallcron>"],
 	options: [
 		{
 			name: "command",
@@ -22,21 +26,30 @@ module.exports = {
 		if (!cmdName) {
 			const noArgsEmbed = new MessageEmbed()
 				.setColor("#FF00FF")
-				.addField(
-					"Commands list",
+				.setTitle("Help panel")
+				.setDescription(
 					`List of all categories available with their commands.\nFor more information about a command, enter \`/help <command>\``
-				);
+				)
+				.setFooter({
+					text: `Total commands: ${
+						Client.commands.map((cmd) => cmd.name).length
+					}`,
+				});
 
-			// Boucle pour rajouter un nouveau champ pour chaque catégorie
+			// Boucle pour rajouter un nouveau champ pour chaque catégorie avec ses commandes
 			for (const category of commandFolder) {
 				noArgsEmbed.addField(
 					` ${category.replace(/(^\w|\s\w)/g, (firstLetter) =>
 						firstLetter.toUpperCase()
-					)}`,
-					`\`${Client.commands
+					)} [${
+						Client.commands
+							.filter((cmd) => cmd.category == category.toLowerCase())
+							.map((cmd) => cmd.name).length
+					}]`,
+					`${Client.commands
 						.filter((cmd) => cmd.category == category.toLowerCase())
-						.map((cmd) => cmd.name)
-						.join(", ")}\``
+						.map((cmd) => "`" + cmd.name + "`")
+						.join(", ")}`
 				);
 			}
 
@@ -54,26 +67,24 @@ module.exports = {
 				ephemeral: true,
 			});
 
-		let userPermissions;
-		// Si on ne trouve pas de permission pour la commande, on affichera dans le embed "NONE"
-		if (cmd.userPermissions == undefined) {
-			userPermissions = "NONE";
-		}
-		// Si on trouve une ou plusieurs permissions, on les affichera dans le embed
-		else {
-			userPermissions = cmd.userPermissions.join(", ");
-		}
-
-		// Si elle existe, on crée l'embed
-		const argsEmbed = new MessageEmbed()
-			.setColor("#FF00FF")
-			.setTitle(`\`${cmd.name}\``)
-			.setDescription(cmd.description)
-			.setFooter({
-				text: `Permission(s) needed: ${userPermissions}`,
-			});
-
 		// On répond à l'utilisateur les informations sur la commande
-		return interaction.reply({ embeds: [argsEmbed], ephemeral: true });
+		return interaction.reply({
+			content: `
+\`\`\`makefile
+[Help: Command -> ${cmd.name}]
+
+${cmd.description ? cmd.description : contextDescription[`${cmd.name}`]}
+
+Use: ${cmd.usage}
+Examples: ${cmd.examples.join(` | `)}
+Permissions: ${cmd.userPermissions.join(", ")}
+
+---
+
+{} = available subcommand(s) | [] = mandatory option(s) | <> = optional option(s)
+Do not use these characters: {}, [] and <> in your commands.
+\`\`\``,
+			ephemeral: true,
+		});
 	},
 };

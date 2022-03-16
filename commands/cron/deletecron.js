@@ -4,8 +4,10 @@ const DiscordJS = require("discord.js");
 module.exports = {
 	name: "deletecron",
 	category: "cron",
-	description: "Deletes the CRON selected.",
+	description: "Deletes the CRON using its identifier.",
 	userPermissions: ["ADMINISTRATOR"],
+	usage: "deletecron [identifier]",
+	examples: ["deletecron [622ea01f78ef802465cda7d4]"],
 	options: [
 		{
 			name: "id",

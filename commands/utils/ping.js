@@ -3,7 +3,10 @@ const { MessageEmbed } = require("discord.js");
 module.exports = {
 	name: "ping",
 	category: "utils",
-	description: "Shows the ping.",
+	description: "Returns the latency of the bot and the API.",
+	userPermissions: ["SEND_MESSAGES"],
+	usage: "ping",
+	examples: ["ping"],
 	// run(Client, message, args) {
 	// 	message.channel.send("Pong!");
 	// },

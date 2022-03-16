@@ -4,8 +4,15 @@ const DiscordJS = require("discord.js");
 module.exports = {
 	name: "updatecron",
 	category: "cron",
-	description: "Updates the CRON selected.",
+	description:
+		"Updates the selected CRON using its identifier if at least one optional option is filled.",
 	userPermissions: ["ADMINISTRATOR"],
+	usage: "updatecron [identifier] <channel> <time> <message>",
+	examples: [
+		"updatecron [622ea01f78ef802465cda7d4] <yourchannel> <09:21> <Hello World!>",
+		"updatecron [622ea01f78ef802465cda7d4] <yourchannel> <09:21> ",
+		"updatecron [622ea01f78ef802465cda7d4] <Hello World!>",
+	],
 	options: [
 		{
 			name: "id",

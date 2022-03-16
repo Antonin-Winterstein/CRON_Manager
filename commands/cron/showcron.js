@@ -4,8 +4,10 @@ const DiscordJS = require("discord.js");
 module.exports = {
 	name: "showcron",
 	category: "cron",
-	description: "Shows the selected CRON.",
+	description: "Shows the selected CRON with its data using its identifier.",
 	userPermissions: ["ADMINISTRATOR"],
+	usage: "showcron [identifier]",
+	examples: ["showcron [622ea01f78ef802465cda7d4]"],
 	options: [
 		{
 			name: "id",

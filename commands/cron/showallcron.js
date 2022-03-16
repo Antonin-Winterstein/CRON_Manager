@@ -3,8 +3,10 @@ const cronSchema = require("../../models/cronSchema");
 module.exports = {
 	name: "showallcron",
 	category: "cron",
-	description: "Shows all the CRONs activated on the server.",
-	userPermissions: ["ADMINISTRATOR", "KICK_MEMBERS"],
+	description: "Shows all the CRON activated on the server with their data.",
+	userPermissions: ["ADMINISTRATOR"],
+	usage: "showallcron",
+	examples: ["showallcron"],
 	async runInteraction(Client, interaction) {
 		// On récupère les données des CRON du serveur en question
 		const findResults = await cronSchema.find({
