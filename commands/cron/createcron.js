@@ -1,4 +1,4 @@
-const cronSchema = require("../../models/cronSchema");
+const { Guild } = require("../../models/index");
 const DiscordJS = require("discord.js");
 
 module.exports = {
@@ -41,13 +41,21 @@ module.exports = {
 		// Si le format pour "time" est respecté
 		if (sentTime.match(timeRegex) != null) {
 			// Créer le CRON
-			await new cronSchema({
-				time: sentTime,
-				message: sentMessage,
-				guildId: interaction.guildId,
-				channelId: sentChannel.id,
-				isActive: false,
-			}).save();
+			await Guild.updateOne(
+				{
+					_id: interaction.guildId,
+				},
+				{
+					$push: {
+						crons: {
+							time: sentTime,
+							message: sentMessage,
+							channelId: sentChannel.id,
+							isActive: false,
+						},
+					},
+				}
+			);
 
 			// On indique que le CRON a été créé avec les paramètres envoyés
 			interaction.reply({

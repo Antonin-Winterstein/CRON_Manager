@@ -1,4 +1,4 @@
-const cronSchema = require("../../models/cronSchema");
+const { Guild } = require("../../models/index");
 const CronJob = require("cron").CronJob;
 const Logger = require("../../utils/Logger");
 
@@ -6,19 +6,18 @@ module.exports = {
 	name: "ready",
 	once: true,
 	async execute(Client) {
-		Logger.client("- ready to use");
+		// Affiche le nombre de serveurs où le bot est actif avec le total d'utilisateurs
+		let guildsCount = await Client.guilds.fetch();
+		let usersCount = Client.guilds.cache.reduce((a, g) => a + g.memberCount, 0);
+		Logger.client(
+			`- ready to be used by ${usersCount} users on ${guildsCount.size} servers`
+		);
 
 		// Si on redémarre le bot ou qu'il crash tout simplement, on remet la valeur isActive de tous les CRON à false pour qu'ils se remettent par la suite automatiquement à true ce qui permet de lancer les CRON
-		cronSchema.updateMany(
-			{ isActive: true },
-			{ $set: { isActive: false } },
-			function (err, result) {
-				if (err) {
-					console.log("Error updating object: " + err);
-				} else {
-					// console.log("" + result + " document(s) updated");
-				}
-			}
+		await Guild.updateMany(
+			{ "crons.isActive": true },
+			{ $set: { "crons.$[].isActive": false } },
+			{ multi: true }
 		);
 
 		// Constantes temporaires pour le développement avec l'ID du serveur
@@ -78,51 +77,50 @@ module.exports = {
 
 		// Fonction qui vérifie si un nouveau CRON a été créé pour l'activer
 		const checkForCRON = async () => {
-			// Récupérer tous les CRON de la base de données
-			const findResults = await cronSchema.find();
+			// Récupérer tous les serveurs de la base de données
+			const findResults = await Guild.find();
 
-			// Boucler sur tous les CRON récupérés
+			// Boucler sur tous les serveurs récupérés
 			for (const post of findResults) {
-				const { _id, time, message, guildId, channelId, isActive } = post;
+				const guildId = post._id;
+				const crons = post.crons;
 
 				const guild = await Client.guilds.fetch(guildId);
 				if (!guild) {
 					continue;
 				}
 
-				const channel = guild.channels.cache.get(channelId);
-				if (!channel) {
-					continue;
-				}
+				// Boucler sur tous les CRON du serveur
+				for (const cronData of crons) {
+					const { time, message, channelId, isActive, _id } = cronData;
 
-				// Récupérer les minutes et heures
-				let hours = time.split(":")[0];
-				let minutes = time.split(":")[1];
+					const channel = guild.channels.cache.get(channelId);
+					if (!channel) {
+						continue;
+					}
 
-				// Si le CRON n'est pas actif, on l'active
-				if (isActive == false) {
-					new CronJob(
-						`1 ${minutes} ${hours} * * *`,
-						function () {
-							channel.send(message);
-						},
-						null,
-						true,
-						"Europe/Paris"
-					);
+					// Récupérer les minutes et heures
+					let hours = time.split(":")[0];
+					let minutes = time.split(":")[1];
 
-					// On actualise le statut du CRON en actif
-					cronSchema.updateOne(
-						{ _id: _id },
-						{ $set: { isActive: true } },
-						function (err, result) {
-							if (err) {
-								console.log("Error updating object: " + err);
-							} else {
-								// console.log("" + result + " document(s) updated");
-							}
-						}
-					);
+					// Si le CRON n'est pas actif, on l'active
+					if (isActive == false) {
+						new CronJob(
+							`1 ${minutes} ${hours} * * *`,
+							function () {
+								channel.send(message);
+							},
+							null,
+							true,
+							"Europe/Paris"
+						);
+
+						// On actualise le statut du CRON en actif
+						await Guild.updateOne(
+							{ _id: guildId, "crons._id": _id },
+							{ $set: { "crons.$.isActive": true } }
+						);
+					}
 				}
 			}
 			// Toutes les 10 secondes, on rappelle cette même fonction pour vérifier si un nouveau CRON a été créé pour ainsi l'activer
@@ -131,5 +129,11 @@ module.exports = {
 
 		// On appelle la fonction qui active les CRON
 		checkForCRON();
+
+		// Permet de changer le statut du bot ainsi que son humeur
+		Client.user.setPresence({
+			activities: [{ name: "every CRON!", type: "LISTENING" }],
+			status: "online",
+		});
 	},
 };

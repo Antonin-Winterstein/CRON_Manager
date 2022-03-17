@@ -1,4 +1,4 @@
-const cronSchema = require("../../models/cronSchema");
+const { Guild } = require("../../models/index");
 const DiscordJS = require("discord.js");
 
 module.exports = {
@@ -23,13 +23,15 @@ module.exports = {
 		// Si le format de l'ID est respecté
 		if (sentId.match(/^[0-9a-fA-F]{24}$/)) {
 			// On supprime le CRON pour l'ID envoyé par l'utilisateur sur son serveur
-			let deleteOneResults = await cronSchema.deleteOne({
-				_id: sentId,
-				guildId: interaction.guildId,
-			});
+			let updateOneResults = await Guild.updateOne(
+				{
+					_id: interaction.guildId,
+				},
+				{ $pull: { crons: { _id: sentId } } }
+			);
 
 			// Si on a effectivement supprimé quelque chose de la BDD, on précise que le CRON a bien été supprimé
-			if (deleteOneResults.deletedCount != 0) {
+			if (updateOneResults.modifiedCount != 0) {
 				interaction.reply({
 					content: "The CRON has been successfully deleted.",
 					ephemeral: true,
