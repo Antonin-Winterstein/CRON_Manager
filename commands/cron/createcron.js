@@ -40,28 +40,38 @@ module.exports = {
 
 		// Si le format pour "time" est respecté
 		if (sentTime.match(timeRegex) != null) {
-			// Créer le CRON
-			await Guild.updateOne(
-				{
-					_id: interaction.guildId,
-				},
-				{
-					$push: {
-						crons: {
-							time: sentTime,
-							message: sentMessage,
-							channelId: sentChannel.id,
-							isActive: false,
-						},
-					},
-				}
-			);
+			const guild = await Client.guilds.fetch(interaction.guildId);
 
-			// On indique que le CRON a été créé avec les paramètres envoyés
-			interaction.reply({
-				content: `__**You added the following message:**__ ${sentMessage}\n__**To this channel:**__ ${sentChannel}\n__**For this time:**__ ${sentTime}`,
-				ephemeral: true,
-			});
+			// Si on n'arrive pas à récupérer l'Id du serveur, on affiche une erreur à l'utilisateur
+			if (!guild) {
+				interaction.reply({
+					content:
+						"An error occured trying to get your server Id. Please contact the creator.",
+					ephemeral: true,
+				});
+			} else {
+				// Créer le CRON
+				await Guild.updateOne(
+					{
+						_id: interaction.guildId,
+					},
+					{
+						$push: {
+							crons: {
+								time: sentTime,
+								message: sentMessage,
+								channelId: sentChannel.id,
+								isActive: false,
+							},
+						},
+					}
+				);
+				// On indique que le CRON a été créé avec les paramètres envoyés
+				interaction.reply({
+					content: `__**You added the following message:**__ ${sentMessage}\n__**To this channel:**__ ${sentChannel}\n__**For this time:**__ ${sentTime}`,
+					ephemeral: true,
+				});
+			}
 		}
 		// Si le format n'est pas respecté
 		else {

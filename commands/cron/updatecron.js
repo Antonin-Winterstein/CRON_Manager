@@ -1,5 +1,7 @@
 const { Guild } = require("../../models/index");
 const DiscordJS = require("discord.js");
+const ObjectId = require("mongodb").ObjectId;
+const CronJobManager = require("../../utils/cronJobManager");
 
 module.exports = {
 	name: "updatecron",
@@ -51,34 +53,29 @@ module.exports = {
 
 		// Si le format de l'ID est respecté
 		if (sentId.match(/^[0-9a-fA-F]{24}$/)) {
-			// On récupère les données pour l'ID envoyé par l'utilisateur sur son serveur
-			const findOneResults = await Guild.findOne(
-				{ _id: interaction.guildId },
-				{ crons: { $elemMatch: { _id: sentId } } }
-			);
-
 			const guild = await Client.guilds.fetch(interaction.guildId);
-			const cron = findOneResults.crons;
 
-			// Si on récupère des données
-			if (typeof cron !== "undefined" && cron.length > 0) {
-				for (const cronData of cron) {
-					const { time, message, channelId, isActive, _id } = cronData;
+			// Si on n'arrive pas à récupérer l'Id du serveur, on affiche une erreur à l'utilisateur
+			if (!guild) {
+				interaction.reply({
+					content:
+						"An error occured trying to get your server Id. Please contact the creator.",
+					ephemeral: true,
+				});
+			} else {
+				// On récupère les données pour l'Id du CRON envoyé par l'utilisateur sur son serveur
+				const findOneResults = await Guild.findOne(
+					{ _id: interaction.guildId },
+					{ crons: { $elemMatch: { _id: sentId } } }
+				);
+				const cron = findOneResults.crons;
 
-					const channel = guild.channels.cache.get(channelId);
-					if (!channel) {
-						continue;
-					}
+				// Si on récupère le CRON
+				if (typeof cron !== "undefined" && cron.length > 0) {
+					// On récupère les données
+					for (const cronData of cron) {
+						const { time, message, channelId, isActive, _id } = cronData;
 
-					// Si on arrive pas à récupérer l'Id du serveur ou du channel, on affiche une erreur à l'utilisateur
-					if (!guild || !channel) {
-						interaction.reply({
-							content: "An error occured. Please contact the creator.",
-							ephemeral: true,
-						});
-					}
-					// S'il n'y a pas d'erreur, on va modifier les données
-					else {
 						// Si aucun champ facultatif n'a été saisi, on indique à l'utilisateur qu'il n'y a pas eu de modifications
 						if (
 							sentChannel == null &&
@@ -102,7 +99,7 @@ module.exports = {
 						} else {
 							// Si l'utilisateur n'a pas rempli l'option "channel", on remet celui de base qu'on retrouve en BDD
 							if (sentChannel == null) {
-								sentChannel = channel;
+								sentChannel = channelId;
 							} else {
 								sentChannel = sentChannel.id;
 							}
@@ -128,6 +125,25 @@ module.exports = {
 								}
 							);
 
+							const cronJobId =
+								interaction.guildId + "_" + ObjectId(sentId).toString();
+
+							// Si le CRON existe
+							if (CronJobManager.cronJobManager.exists(cronJobId)) {
+								// Récupérer les minutes et heures
+								let hours = sentTime.split(":")[0];
+								let minutes = sentTime.split(":")[1];
+
+								// On met à jour ce CRON avec les nouvelles informations sur le manager
+								CronJobManager.cronJobManager.update(
+									cronJobId,
+									`1 ${minutes} ${hours} * * *`,
+									function () {
+										guild.channels.cache.get(sentChannel).send(sentMessage);
+									}
+								);
+							}
+
 							// Si on a effectivement modifié quelque chose de la BDD, on précise que le CRON a bien été modifié
 							if (updateResults.modifiedCount != 0) {
 								interaction.reply({
@@ -145,13 +161,13 @@ module.exports = {
 						}
 					}
 				}
-			}
-			// Si on ne récupère pas de données, cela veut dire que l'ID n'était pas bon et on l'indique à l'utilisateur
-			else {
-				interaction.reply({
-					content: "No CRON found for this Id.",
-					ephemeral: true,
-				});
+				// Si on ne récupère pas de données, cela veut dire que l'ID n'était pas bon et on l'indique à l'utilisateur
+				else {
+					interaction.reply({
+						content: "No CRON found for this Id.",
+						ephemeral: true,
+					});
+				}
 			}
 		}
 		// Si le format de l'ID n'est pas respecté, on l'indique à l'utilisateur
