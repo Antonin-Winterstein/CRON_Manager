@@ -2,6 +2,7 @@ const { Guild } = require("../../models/index");
 const DiscordJS = require("discord.js");
 const ObjectId = require("mongodb").ObjectId;
 const CronJobManager = require("../../utils/cronJobManager");
+const checkIfGuildExists = require("../../utils/checkIfGuildExists");
 
 module.exports = {
 	name: "deletecron",
@@ -34,6 +35,13 @@ module.exports = {
 					ephemeral: true,
 				});
 			} else {
+				// On récupère les données du serveur en question
+				const findResults = await Guild.find({
+					_id: interaction.guildId,
+				});
+
+				await checkIfGuildExists.checkIfGuildExists(findResults, interaction);
+
 				// On supprime le CRON pour l'ID envoyé par l'utilisateur sur son serveur
 				let updateOneResults = await Guild.updateOne(
 					{
@@ -42,17 +50,17 @@ module.exports = {
 					{ $pull: { crons: { _id: sentId } } }
 				);
 
-				const cronJobId =
-					interaction.guildId + "_" + ObjectId(sentId).toString();
-
-				// Si le CRON existe
-				if (CronJobManager.cronJobManager.exists(cronJobId)) {
-					// On supprime le CRON du manager
-					CronJobManager.cronJobManager.deleteJob(cronJobId);
-				}
-
 				// Si on a effectivement supprimé quelque chose de la BDD, on précise que le CRON a bien été supprimé
 				if (updateOneResults.modifiedCount != 0) {
+					const cronJobId =
+						interaction.guildId + "_" + ObjectId(sentId).toString();
+
+					// Si le CRON existe
+					if (CronJobManager.cronJobManager.exists(cronJobId)) {
+						// On supprime le CRON du manager
+						CronJobManager.cronJobManager.deleteJob(cronJobId);
+					}
+
 					interaction.reply({
 						content: "The CRON has been successfully deleted.",
 						ephemeral: true,

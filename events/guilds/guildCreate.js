@@ -15,7 +15,7 @@ module.exports = {
 				_id: guild.id,
 				name: guild.name,
 			});
-			createGuild
+			await createGuild
 				.save()
 				.then((g) =>
 					Logger.client(
@@ -23,7 +23,7 @@ module.exports = {
 					)
 				);
 		} else {
-			// On modifie le nom de la guilde de la BDD
+			// On modifie le nom de la guilde de la BDD s'il a changé
 			await Guild.updateOne(
 				{
 					_id: guild.id,

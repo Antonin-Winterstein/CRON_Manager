@@ -1,5 +1,7 @@
 const { Guild } = require("../../models/index");
+const { MessageEmbed } = require("discord.js");
 const DiscordJS = require("discord.js");
+const checkIfGuildExists = require("../../utils/checkIfGuildExists");
 
 module.exports = {
 	name: "createcron",
@@ -50,8 +52,15 @@ module.exports = {
 					ephemeral: true,
 				});
 			} else {
+				// On récupère les données du serveur en question
+				const findResults = await Guild.find({
+					_id: interaction.guildId,
+				});
+
+				await checkIfGuildExists.checkIfGuildExists(findResults, interaction);
+
 				// Créer le CRON
-				await Guild.updateOne(
+				const addCron = await Guild.updateOne(
 					{
 						_id: interaction.guildId,
 					},
@@ -66,11 +75,29 @@ module.exports = {
 						},
 					}
 				);
-				// On indique que le CRON a été créé avec les paramètres envoyés
-				interaction.reply({
-					content: `__**You added the following message:**__ ${sentMessage}\n__**To this channel:**__ ${sentChannel}\n__**For this time:**__ ${sentTime}`,
-					ephemeral: true,
-				});
+
+				// Si on a effectivement ajouté le CRON à la BDD, on précise que le CRON a bien été ajouté
+				if (addCron.modifiedCount != 0) {
+					const embedReply = new MessageEmbed()
+						.setColor("#00CB54")
+						.setDescription("You added the following CRON:")
+						.addField("Message", `${sentMessage}`)
+						.addField("Channel", `${sentChannel}`)
+						.addField("Time", `${sentTime}`)
+						.setFooter({
+							text: `Added by: ${interaction.member.user.tag}`,
+							iconURL: `${interaction.member.user.displayAvatarURL()}`,
+						});
+
+					interaction.reply({ embeds: [embedReply], ephemeral: true });
+				}
+				// Sinon, on indique qu'aucun changement n'a été relevé
+				else {
+					interaction.reply({
+						content: "Error happened while trying to add the CRON.",
+						ephemeral: true,
+					});
+				}
 			}
 		}
 		// Si le format n'est pas respecté

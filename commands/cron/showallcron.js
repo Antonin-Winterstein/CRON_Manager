@@ -1,4 +1,6 @@
 const { Guild } = require("../../models/index");
+const { MessageEmbed } = require("discord.js");
+const checkIfGuildExists = require("../../utils/checkIfGuildExists");
 
 module.exports = {
 	name: "showallcron",
@@ -18,17 +20,29 @@ module.exports = {
 				ephemeral: true,
 			});
 		} else {
-			// On récupère les données des CRON du serveur en question
+			// On récupère les données du serveur en question
 			const findResults = await Guild.find({
 				_id: interaction.guildId,
 			});
 			let replyContent;
-			// On boucle sur tous les CRON récupérés
+
+			await checkIfGuildExists.checkIfGuildExists(
+				findResults,
+				interaction,
+				"No CRON found on this server. Please try to create one."
+			);
+
+			// On boucle sur tous les CRON récupérés sur le serveur
 			for (const post of findResults) {
 				const crons = post.crons;
+
+				const embedReply = new MessageEmbed()
+					.setColor("#0096FF")
+					.setDescription("The informations of all of your CRON:");
 				// Si on récupère des CRON
 				if (typeof crons !== "undefined" && crons.length > 0) {
 					// Boucler sur tous les CRON du serveur
+					let increment = 0;
 					for (const cronData of crons) {
 						const { time, message, channelId, isActive, _id } = cronData;
 
@@ -40,22 +54,20 @@ module.exports = {
 								"This channel no longer exists, please update the channel of this CRON.";
 						}
 
-						// Condition nécessaire pour la première itération de la boucle
-						if (replyContent == undefined) {
-							// On affiche les données du CRON
-							replyContent = `__**Id:**__ ${_id}\n__**Channel:**__ ${channel}\n__**Time:**__ ${time}\n__**Message:**__ ${message}\n\n`;
-						} else {
-							// On concatène les données des CRON précédents au nouveau
-							replyContent =
-								replyContent +
-								`__**Id:**__ ${_id}\n__**Channel:**__ ${channel}\n__**Time:**__ ${time}\n__**Message:**__ ${message}\n\n`;
+						increment++;
+
+						// console.log(crons.length);
+
+						embedReply.addField("Id", `${_id}`);
+						embedReply.addField("Message", `${message}`);
+						embedReply.addField("Channel", `${channel}`);
+						embedReply.addField("Time", `${time}`);
+						if (increment != crons.length) {
+							embedReply.addField("______", "\u200B");
 						}
 					}
 					// On montre à l'utilisateur tous les CRON sur son serveur
-					interaction.reply({
-						content: replyContent,
-						ephemeral: true,
-					});
+					interaction.reply({ embeds: [embedReply], ephemeral: true });
 				}
 				// Si on ne trouve pas de CRON, on indique à l'utilisateur qu'il n'en existe pas sur le serveur
 				else {

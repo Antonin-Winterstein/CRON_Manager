@@ -1,5 +1,7 @@
 const { Guild } = require("../../models/index");
+const { MessageEmbed } = require("discord.js");
 const DiscordJS = require("discord.js");
+const checkIfGuildExists = require("../../utils/checkIfGuildExists");
 
 module.exports = {
 	name: "showcron",
@@ -32,12 +34,18 @@ module.exports = {
 					ephemeral: true,
 				});
 			} else {
+				// On récupère les données du serveur en question
+				const findResults = await Guild.find({
+					_id: interaction.guildId,
+				});
+
+				await checkIfGuildExists.checkIfGuildExists(findResults, interaction);
+
 				// On récupère les données pour l'Id du CRON envoyé par l'utilisateur sur son serveur
 				const findOneResults = await Guild.findOne(
 					{ _id: interaction.guildId },
 					{ crons: { $elemMatch: { _id: sentId } } }
 				);
-
 				const cron = findOneResults.crons;
 
 				// Si on récupère le CRON
@@ -55,10 +63,16 @@ module.exports = {
 						}
 
 						// On affiche les données du CRON à l'utilisateur
-						interaction.reply({
-							content: `__**Id:**__ ${_id}\n__**Channel:**__ ${channel}\n__**Time:**__ ${time}\n__**Message:**__ ${message}\n\n`,
-							ephemeral: true,
-						});
+
+						const embedReply = new MessageEmbed()
+							.setColor("#0096FF")
+							.setDescription("The informations of your CRON:")
+							.addField("Id", `${_id}`)
+							.addField("Message", `${message}`)
+							.addField("Channel", `${channel}`)
+							.addField("Time", `${time}`);
+
+						interaction.reply({ embeds: [embedReply], ephemeral: true });
 					}
 				}
 				// Si on ne récupère pas le CRON

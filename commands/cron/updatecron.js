@@ -2,6 +2,7 @@ const { Guild } = require("../../models/index");
 const DiscordJS = require("discord.js");
 const ObjectId = require("mongodb").ObjectId;
 const CronJobManager = require("../../utils/cronJobManager");
+const checkIfGuildExists = require("../../utils/checkIfGuildExists");
 
 module.exports = {
 	name: "updatecron",
@@ -63,6 +64,13 @@ module.exports = {
 					ephemeral: true,
 				});
 			} else {
+				// On récupère les données du serveur en question
+				const findResults = await Guild.find({
+					_id: interaction.guildId,
+				});
+
+				await checkIfGuildExists.checkIfGuildExists(findResults, interaction);
+
 				// On récupère les données pour l'Id du CRON envoyé par l'utilisateur sur son serveur
 				const findOneResults = await Guild.findOne(
 					{ _id: interaction.guildId },

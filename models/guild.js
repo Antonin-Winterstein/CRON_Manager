@@ -14,6 +14,7 @@ const guildSchema = new mongoose.Schema({
 	name: { type: String, required: true }, // Nom du serveur
 	crons: {
 		type: [cronData],
+		default: [],
 		required: false,
 	},
 });

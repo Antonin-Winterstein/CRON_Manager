@@ -23,8 +23,9 @@ const checkForCRON = async (Client) => {
 		// Boucler sur tous les CRON du serveur
 		for (const cronData of crons) {
 			const { time, message, channelId, isActive, _id } = cronData;
-
 			const channel = guild.channels.cache.get(channelId);
+
+			// Si le channel n'existe pas, on continue la boucle
 			if (!channel) {
 				continue;
 			}
@@ -46,23 +47,6 @@ const checkForCRON = async (Client) => {
 						timeZone: "Europe/Paris",
 					}
 				);
-
-				// if (cronJobManager.exists(`${guildId}_${ObjectId(_id).toString()}`)) {
-				// 	console.log("exists");
-				// }
-
-				// console.log(`${guildId}_${ObjectId(_id).toString()}`);
-				// if (cronJobManager.exists(`${guildId}_${ObjectId(_id).toString()}`))
-				// 	console.log("exists");
-				// new CronJob(
-				// 	`1 ${minutes} ${hours} * * *`,
-				// 	function () {
-				// 		channel.send(message);
-				// 	},
-				// 	null,
-				// 	true,
-				// 	"Europe/Paris"
-				// );
 
 				// On actualise le statut du CRON en actif
 				await Guild.updateOne(
