@@ -25,6 +25,20 @@ const checkIfGuildExists = async (guildData, interaction, replyMessage) => {
 			});
 		}
 	}
+
+	if (guildData[0].name !== interaction.guild.name) {
+		// On modifie le nom de la guilde de la BDD s'il a changé
+		await Guild.updateOne(
+			{
+				_id: interaction.guildId,
+			},
+			{
+				$set: {
+					name: interaction.guild.name,
+				},
+			}
+		);
+	}
 };
 
 module.exports = { checkIfGuildExists };

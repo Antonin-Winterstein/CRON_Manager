@@ -78,6 +78,7 @@ module.exports = {
 
 				// Si on a effectivement ajouté le CRON à la BDD, on précise que le CRON a bien été ajouté
 				if (addCron.modifiedCount != 0) {
+					// Contenu du embed
 					const embedReply = new MessageEmbed()
 						.setColor("#00CB54")
 						.setDescription("You added the following CRON:")
@@ -89,9 +90,10 @@ module.exports = {
 							iconURL: `${interaction.member.user.displayAvatarURL()}`,
 						});
 
+					// Affichage du embed à l'utilisateur
 					interaction.reply({ embeds: [embedReply], ephemeral: true });
 				}
-				// Sinon, on indique qu'aucun changement n'a été relevé
+				// Sinon, on indique qu'il y a eu un problème lors de la création du CRON
 				else {
 					interaction.reply({
 						content: "Error happened while trying to add the CRON.",

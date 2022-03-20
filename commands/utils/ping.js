@@ -16,6 +16,7 @@ module.exports = {
 			fetchReply: true,
 		});
 
+		// Contenu du embed
 		const embed = new MessageEmbed()
 			.setTitle("🏓 Pong!")
 			.setThumbnail(Client.user.displayAvatarURL())
@@ -39,6 +40,7 @@ module.exports = {
 				iconURL: interaction.user.displayAvatarURL(),
 			});
 
+		// Affichage du embed à l'utilisateur
 		interaction.editReply({ content: " ", embeds: [embed] });
 	},
 };

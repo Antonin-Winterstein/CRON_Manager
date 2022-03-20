@@ -24,6 +24,7 @@ module.exports = {
 
 		// Si aucune option n'a été remplie
 		if (!cmdName) {
+			// Contenu du embed
 			const noArgsEmbed = new MessageEmbed()
 				.setColor("#FF00FF")
 				.setTitle("Help panel")
@@ -36,7 +37,7 @@ module.exports = {
 					}`,
 				});
 
-			// Boucle pour rajouter un nouveau champ pour chaque catégorie avec ses commandes
+			// Boucle pour rajouter un nouveau champ dans le embed pour chaque catégorie avec ses commandes
 			for (const category of commandFolder) {
 				noArgsEmbed.addField(
 					` ${category.replace(/(^\w|\s\w)/g, (firstLetter) =>

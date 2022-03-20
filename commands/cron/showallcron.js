@@ -24,7 +24,6 @@ module.exports = {
 			const findResults = await Guild.find({
 				_id: interaction.guildId,
 			});
-			let replyContent;
 
 			await checkIfGuildExists.checkIfGuildExists(
 				findResults,
@@ -36,6 +35,7 @@ module.exports = {
 			for (const post of findResults) {
 				const crons = post.crons;
 
+				// Contenu du embed
 				const embedReply = new MessageEmbed()
 					.setColor("#0096FF")
 					.setDescription("The informations of all of your CRON:");
@@ -56,12 +56,12 @@ module.exports = {
 
 						increment++;
 
-						// console.log(crons.length);
-
+						// On ajoute chaque CRON dans le embed
 						embedReply.addField("Id", `${_id}`);
 						embedReply.addField("Message", `${message}`);
 						embedReply.addField("Channel", `${channel}`);
 						embedReply.addField("Time", `${time}`);
+						// Condition pour ne pas mettre l'espace avec la séparation sur le dernier CRON
 						if (increment != crons.length) {
 							embedReply.addField("______", "\u200B");
 						}

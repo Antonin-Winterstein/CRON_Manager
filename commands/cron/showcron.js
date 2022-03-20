@@ -62,8 +62,7 @@ module.exports = {
 								"This channel no longer exists, please update the channel of this CRON.";
 						}
 
-						// On affiche les données du CRON à l'utilisateur
-
+						// Contenu du embed
 						const embedReply = new MessageEmbed()
 							.setColor("#0096FF")
 							.setDescription("The informations of your CRON:")
@@ -72,6 +71,7 @@ module.exports = {
 							.addField("Channel", `${channel}`)
 							.addField("Time", `${time}`);
 
+						// Affichage du embed à l'utilisateur
 						interaction.reply({ embeds: [embedReply], ephemeral: true });
 					}
 				}

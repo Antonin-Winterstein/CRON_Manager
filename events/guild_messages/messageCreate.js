@@ -1,3 +1,5 @@
+// Pas besoin de cet événement car il ne fonctionne qu'avec les commandes nécessitant un préfixe or on utilise les slash commands
+
 // Le préfixe qu'on souhaite utiliser pour nos commandes Discord
 const prefix = "!";
 

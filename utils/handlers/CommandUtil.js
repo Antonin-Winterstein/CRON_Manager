@@ -62,6 +62,7 @@ module.exports = async (Client) => {
 	});
 };
 
+// La liste de toutes les permisssions sur Discord.js
 const userPermissionList = [
 	"CREATE_INSTANT_INVITE",
 	"KICK_MEMBERS",

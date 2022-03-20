@@ -9,7 +9,7 @@ module.exports = {
 			// Si l'utilisateur n'a pas les permissions en global pour la slash commande, on lui indique
 			if (!interaction.member.permissions.has(cmd.userPermissions || []))
 				return interaction.followUp({
-					content: "⛔ You do not have permissions to use this command.",
+					content: "You do not have permissions to use this command.",
 				});
 
 			// Exécuter les slash commandes

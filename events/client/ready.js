@@ -20,8 +20,9 @@ module.exports = {
 			{ multi: true }
 		);
 
-		// Constantes temporaires pour le développement avec l'ID du serveur
+		// Constante temporaire pour le développement avec l'ID de mon serveur
 		const guild = await Client.guilds.cache.get("646033280499580948");
+		// const test = Client.guilds.cache.map((guild) => guild.id);
 		const arrayOfSlashCommands = Client.commands.map((cmd) => cmd);
 
 		guild.commands.set(arrayOfSlashCommands).then((cmd) => {
