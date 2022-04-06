@@ -21,7 +21,8 @@ module.exports = {
 		);
 
 		// Constante temporaire pour le développement avec l'ID de mon serveur
-		// const guild = await Client.guilds.cache.get("646033280499580948");
+		const guild = await Client.guilds.cache.get("646033280499580948");
+		guild.commands.set([]);
 		// guild.commands.set(Client.commands.map((cmd) => cmd));
 		// Déploiement en global
 		Client.application.commands.set(Client.commands.map((cmd) => cmd));
