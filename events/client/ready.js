@@ -21,60 +21,9 @@ module.exports = {
 		);
 
 		// Constante temporaire pour le développement avec l'ID de mon serveur
-		const guild = await Client.guilds.cache.get("646033280499580948");
-		// const test = Client.guilds.cache.map((guild) => guild.id);
-		const arrayOfSlashCommands = Client.commands.map((cmd) => cmd);
-
-		guild.commands.set(arrayOfSlashCommands).then((cmd) => {
-			// Récupération des rôles pour la commande
-			const getRoles = (commandName) => {
-				// Récupération des permissions requises pour la commande
-				const permissions = arrayOfSlashCommands.find(
-					(x) => x.name === commandName
-				).userPermissions;
-
-				// Si la commande n'a pas de permission
-				if (!permissions) return null;
-
-				// Si la commande a des permissions on récupère les rôles
-				return guild.roles.cache.filter(
-					(x) => x.permissions.has(permissions) && !x.managed
-				);
-			};
-
-			// Récupération des permissions pour la commande
-			const fullPermissions = cmd.reduce((accumulator, x) => {
-				// Récupération des rôles pour la commande
-				const roles = getRoles(x.name);
-
-				// S'il n'y a pas de rôles
-				if (!roles) return accumulator;
-
-				// Définition de toutes les permissions nécessaires
-				const permissions = roles.reduce((a, v) => {
-					return [
-						...a,
-						{
-							id: v.id,
-							type: "ROLE",
-							permission: true,
-						},
-					];
-				}, []);
-
-				// On retourne les permissions nécessaires pour la commande
-				return [
-					...accumulator,
-					{
-						id: x.id,
-						permissions,
-					},
-				];
-			}, []);
-
-			// Met à jour les permissions pour la commande
-			guild.commands.permissions.set({ fullPermissions });
-		});
+		// const guild = await Client.guilds.cache.get("646033280499580948");
+		// guild.commands.set(Client.commands.map((cmd) => cmd));
+		Client.application.commands.set(Client.commands.map((cmd) => cmd));
 
 		// On appelle la fonction qui active les CRON
 		CronJobManager.checkForCRON(Client);

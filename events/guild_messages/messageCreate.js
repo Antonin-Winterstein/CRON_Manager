@@ -21,6 +21,12 @@ module.exports = {
 		// Permet de récupérer le nom de la commande
 		let cmd = Client.commands.get(cmdName);
 
+		if (!message.member.permissions.has([cmd.userPermissions]))
+			return message.reply(
+				`You do not have permissions to use this command. You must have \`${cmd.userPermissions.join(
+					","
+				)}\`.`
+			);
 		// À décommenter pour utiliser les commandes avec préfixe et les exécuter
 		// if (cmd) cmd.run(Client, message, args);
 	},

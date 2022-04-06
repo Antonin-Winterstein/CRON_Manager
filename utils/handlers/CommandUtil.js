@@ -53,9 +53,6 @@ module.exports = async (Client) => {
 			}
 		});
 
-		// Si la commande a une permission spécifiée, on la désactive de base pour tout le monde (y compris les adminisrateurs)
-		if (cmd.userPermissions) cmd.defaultPermission = false;
-
 		// Chargement de la commande trouvée
 		Client.commands.set(cmd.name, cmd);
 		Logger.command(`- ${cmd.name}`);
