@@ -6,7 +6,7 @@ module.exports = {
 	name: "showallcron",
 	category: "cron",
 	description: "Shows all the CRON activated on the server with their data.",
-	userPermissions: ["ADMINISTRATOR"],
+	permissions: ["ADMINISTRATOR"],
 	usage: "showallcron",
 	examples: ["showallcron"],
 	async runInteraction(Client, interaction) {

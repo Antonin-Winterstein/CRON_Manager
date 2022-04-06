@@ -8,7 +8,7 @@ module.exports = {
 	category: "utils",
 	description:
 		"Displays the help panel with all available commands filtered by category.",
-	userPermissions: ["SEND_MESSAGES"],
+	permissions: ["SEND_MESSAGES"],
 	usage: "help <command>",
 	examples: ["help", "help <createcron>", "help <showallcron>"],
 	options: [
@@ -78,7 +78,7 @@ ${cmd.description ? cmd.description : contextDescription[`${cmd.name}`]}
 
 Use: ${cmd.usage}
 Examples: ${cmd.examples.join(` | `)}
-Permissions: ${cmd.userPermissions.join(", ")}
+Permissions: ${cmd.permissions.join(", ")}
 
 ---
 

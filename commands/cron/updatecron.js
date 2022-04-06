@@ -9,7 +9,7 @@ module.exports = {
 	category: "cron",
 	description:
 		"Updates the selected CRON using its identifier if at least one optional option is filled.",
-	userPermissions: ["ADMINISTRATOR"],
+	permissions: ["ADMINISTRATOR"],
 	usage: "updatecron [identifier] <channel> <time> <message>",
 	examples: [
 		"updatecron [622ea01f78ef802465cda7d4] <yourchannel> <09:21> <Hello World!>",

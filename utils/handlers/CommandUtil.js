@@ -27,7 +27,7 @@ module.exports = async (Client) => {
 			);
 
 		// Message d'erreur s'il manque les permissions pour la commande
-		if (!cmd.userPermissions)
+		if (!cmd.permissions)
 			return Logger.warn(
 				`Command not loaded:  no permission, add at least one to your command ↓\nFile -> ${cmdFile}`
 			);
@@ -45,10 +45,10 @@ module.exports = async (Client) => {
 			);
 
 		// Message d'erreur si la permission a un problème de typographie
-		cmd.userPermissions.forEach((userPermission) => {
-			if (!userPermissionList.includes(userPermission)) {
+		cmd.permissions.forEach((permission) => {
+			if (!permissionsList.includes(permission)) {
 				return Logger.typo(
-					`Command not loaded:  typography error on the permission '${userPermission}' ↓\nFile -> ${cmdFile}`
+					`Command not loaded:  typography error on the permission '${permission}' ↓\nFile -> ${cmdFile}`
 				);
 			}
 		});
@@ -60,7 +60,7 @@ module.exports = async (Client) => {
 };
 
 // La liste de toutes les permisssions sur Discord.js
-const userPermissionList = [
+const permissionsList = [
 	"CREATE_INSTANT_INVITE",
 	"KICK_MEMBERS",
 	"BAN_MEMBERS",

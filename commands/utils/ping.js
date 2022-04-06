@@ -4,7 +4,7 @@ module.exports = {
 	name: "ping",
 	category: "utils",
 	description: "Returns the latency of the bot and the API.",
-	userPermissions: ["SEND_MESSAGES"],
+	permissions: ["SEND_MESSAGES"],
 	usage: "ping",
 	examples: ["ping"],
 	// run(Client, message, args) {

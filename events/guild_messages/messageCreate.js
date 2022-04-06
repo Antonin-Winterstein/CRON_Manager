@@ -21,9 +21,10 @@ module.exports = {
 		// Permet de récupérer le nom de la commande
 		let cmd = Client.commands.get(cmdName);
 
-		if (!message.member.permissions.has([cmd.userPermissions]))
+		// Si l'utilisateur n'a pas les permissions pour la commande, on lui indique
+		if (!message.member.permissions.has([cmd.permissions]))
 			return message.reply(
-				`You do not have permissions to use this command. You must have \`${cmd.userPermissions.join(
+				`You do not have permissions to use this command. You must have \`${cmd.permissions.join(
 					","
 				)}\`.`
 			);

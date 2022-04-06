@@ -8,7 +8,7 @@ module.exports = {
 	category: "cron",
 	description:
 		"Creates a CRON that sends a message to a specific hour (format: HH:mm) in a specific channel.",
-	userPermissions: ["ADMINISTRATOR"],
+	permissions: ["ADMINISTRATOR"],
 	usage: "createcron [channel] [time] [message]",
 	examples: ["createcron [yourchannel] [09:21] [Hello World!]"],
 	options: [

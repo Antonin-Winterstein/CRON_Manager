@@ -8,7 +8,7 @@ module.exports = {
 	name: "deletecron",
 	category: "cron",
 	description: "Deletes the CRON using its identifier.",
-	userPermissions: ["ADMINISTRATOR"],
+	permissions: ["ADMINISTRATOR"],
 	usage: "deletecron [identifier]",
 	examples: ["deletecron [622ea01f78ef802465cda7d4]"],
 	options: [

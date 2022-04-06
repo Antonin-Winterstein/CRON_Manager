@@ -7,9 +7,9 @@ module.exports = {
 			if (!cmd) return interaction.reply("This command doesn't exist.");
 
 			// Si l'utilisateur n'a pas les permissions pour la slash commande, on lui indique
-			if (!interaction.member.permissions.has([cmd.userPermissions]))
+			if (!interaction.member.permissions.has([cmd.permissions]))
 				return interaction.reply({
-					content: `You do not have permissions to use this command. You must have \`${cmd.userPermissions.join(
+					content: `You do not have permissions to use this command. You must have \`${cmd.permissions.join(
 						","
 					)}\`.`,
 					ephemeral: true,
