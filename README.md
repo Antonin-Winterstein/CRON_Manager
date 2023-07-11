@@ -23,23 +23,34 @@ To program your first CRON, you will use the `createcron` command. There are thr
 
 #### Options description
 
-- [channel]: The channel (only textual) in which the message you scheduled will be sent. You can only select one channel. Examples: `#meeting`, `#important`
-- [time]: The time when the message will be sent (format: `HH:mm`).
+- [channel]: The channel (only textual) in which the message you scheduled will be sent. You can only select one channel.\
+**Examples:** `#meeting`, `#important`
+
+- [time]: The time when the message will be sent (format: `HH:mm`).\
 **Examples:** `12:30`, `00:00`.
-- [message]: The message you want to send. Note that you can't send a message with more than 2 000 characters. You can use tags (with the `@`), mention textual channels (with the `#`), use emojis and custom emojis from your server.
+
+- [message]: The message you want to send. Note that you can't send a message with more than 2 000 characters. You can use tags (with the `@`), mention textual channels (with the `#`), use emojis and custom emojis from your server.\
 **Example:** `Hello @everyone, let's talk about some crazy stuff in #meeting! 🔥`.
-- <days>: The specific days of the month you want your message to be sent (`from 1 to 31`). Separate each day you want by commas or put `ALL` if you want all of them. If not specified, it will be sent every. Note that the `weekInterval` option does not impact this `days` option if you specified it, in any case, the message will be sent at the days registered.
+
+- \<days\>: The specific days of the month you want your message to be sent (`from 1 to 31`). Separate each day you want by commas or put `ALL` if you want all of them. If not specified, it will be sent every. Note that the `weekInterval` option does not impact this `days` option if you specified it, in any case, the message will be sent at the days registered.\
 **Examples:** `1, 10, 25`, `ALL`.
-- <months>: The specific months you want your message to be sent (`from January to December`). Separate each month you want by commas or put `ALL`. If not specified, it will be sent every month. Note that you can't specify a `startTime` if you are using months. Moreover, if you are using a `weekInterval` of more than 1, you will also need to specify the `startMonthDay` option for each month.
+
+- <months>: The specific months you want your message to be sent (`from January to December`). Separate each month you want by commas or put `ALL`. If not specified, it will be sent every month. Note that you can't specify a `startTime` if you are using months. Moreover, if you are using a `weekInterval` of more than 1, you will also need to specify the `startMonthDay` option for each month.\
 **Examples:** `September, November, December`, `ALL`.
-- <daysOfWeek>: The days of the week you want your message to be sent (`from Sunday to Saturday`). Separate each day of the week by commas or put `ALL`. If not specified, it will be sent every day of the week.
+
+- <daysOfWeek>: The days of the week you want your message to be sent (`from Sunday to Saturday`). Separate each day of the week by commas or put `ALL`. If not specified, it will be sent every day of the week.\
  **Examples:** `Monday, Wednesday, Friday`, `ALL`.
-- <weekInterval>: The interval of weeks you want your message to be sent. By default, it is set to 1 (sent every week) but you can specify a number to change it. Note that if you are using a `weekInterval` greater than 1 while specifying months, you will need to also use the `startMonthDay` option.
+
+- <weekInterval>: The interval of weeks you want your message to be sent. By default, it is set to 1 (sent every week) but you can specify a number to change it. Note that if you are using a `weekInterval` greater than 1 while specifying months, you will need to also use the `startMonthDay` option.\
  **Example:** `2`
-- <startTime>: The date you want your message to start sending from (format: `YYYY-MM-DD`). By default, it will take the current date of the time zone specified (if you did, if not it will take the Europe/Paris time zone). Note that you can't use this option if you specified months.
+
+- <startTime>: The date you want your message to start sending from (format: `YYYY-MM-DD`). By default, it will take the current date of the time zone specified (if you did, if not it will take the Europe/Paris time zone). Note that you can't use this option if you specified months.\
  **Example:** `2023-09-20`
-- <startMonthDay>: The start days of each month you want your message to start sending from (`from 1 to 5`) where for example 1 means the first day of the week of the month, e.g the first sunday of the month. For each month you put, you shall add the corresponding starting day all separated by commas. Note that it can only be used if `weekInterval` is greater than 1 and if `months` is used.
- **Example:** `1`, `1, 3, 1, 2`
-- <timeZone>: The time zone you want the message to be sent from. Please use the TZ identifier, you can see a list of them on this [link](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). By default it is set to Europe/Paris.
+
+- <startMonthDay>: The start days of each month you want your message to start sending from (`from 1 to 5`) where for example 1 means the first day of the week of the month, e.g the first sunday of the month. For each month you put, you shall add the corresponding starting day all separated by commas. Note that it can only be used if `weekInterval` is greater than 1 and if `months` is used.\
+ **Examples:** `1`, `1, 3, 1, 2`
+
+- <timeZone>: The time zone you want the message to be sent from. Please use the TZ identifier, you can see a list of them on this [link](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). By default it is set to Europe/Paris.\
+**Example:** `America/Los_Angeles`, `Europe/London`
 
 #### Examples
