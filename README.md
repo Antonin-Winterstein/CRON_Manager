@@ -35,22 +35,22 @@ To program your first CRON, you will use the `createcron` command. There are thr
 - \<days\>: The specific days of the month you want your message to be sent (`from 1 to 31`). Separate each day you want by commas or put `ALL` if you want all of them. If not specified, it will be sent every. Note that the `weekInterval` option does not impact this `days` option if you specified it, in any case, the message will be sent at the days registered.\
 **Examples:** `1, 10, 25`, `ALL`.
 
-- <months>: The specific months you want your message to be sent (`from January to December`). Separate each month you want by commas or put `ALL`. If not specified, it will be sent every month. Note that you can't specify a `startTime` if you are using months. Moreover, if you are using a `weekInterval` of more than 1, you will also need to specify the `startMonthDay` option for each month.\
+- \<months\>: The specific months you want your message to be sent (`from January to December`). Separate each month you want by commas or put `ALL`. If not specified, it will be sent every month. Note that you can't specify a `startTime` if you are using months. Moreover, if you are using a `weekInterval` of more than 1, you will also need to specify the `startMonthDay` option for each month.\
 **Examples:** `September, November, December`, `ALL`.
 
-- <daysOfWeek>: The days of the week you want your message to be sent (`from Sunday to Saturday`). Separate each day of the week by commas or put `ALL`. If not specified, it will be sent every day of the week.\
+- \<daysOfWeek\>: The days of the week you want your message to be sent (`from Sunday to Saturday`). Separate each day of the week by commas or put `ALL`. If not specified, it will be sent every day of the week.\
  **Examples:** `Monday, Wednesday, Friday`, `ALL`.
 
-- <weekInterval>: The interval of weeks you want your message to be sent. By default, it is set to 1 (sent every week) but you can specify a number to change it. Note that if you are using a `weekInterval` greater than 1 while specifying months, you will need to also use the `startMonthDay` option.\
+- \<weekInterval\>: The interval of weeks you want your message to be sent. By default, it is set to 1 (sent every week) but you can specify a number to change it. Note that if you are using a `weekInterval` greater than 1 while specifying months, you will need to also use the `startMonthDay` option.\
  **Example:** `2`
 
-- <startTime>: The date you want your message to start sending from (format: `YYYY-MM-DD`). By default, it will take the current date of the time zone specified (if you did, if not it will take the Europe/Paris time zone). Note that you can't use this option if you specified months.\
+- \<startTime\>: The date you want your message to start sending from (format: `YYYY-MM-DD`). By default, it will take the current date of the time zone specified (if you did, if not it will take the Europe/Paris time zone). Note that you can't use this option if you specified months.\
  **Example:** `2023-09-20`
 
-- <startMonthDay>: The start days of each month you want your message to start sending from (`from 1 to 5`) where for example 1 means the first day of the week of the month, e.g the first sunday of the month. For each month you put, you shall add the corresponding starting day all separated by commas. Note that it can only be used if `weekInterval` is greater than 1 and if `months` is used.\
+- \<startMonthDay\>: The start days of each month you want your message to start sending from (`from 1 to 5`) where for example 1 means the first day of the week of the month, e.g the first sunday of the month. For each month you put, you shall add the corresponding starting day all separated by commas. Note that it can only be used if `weekInterval` is greater than 1 and if `months` is used.\
  **Examples:** `1`, `1, 3, 1, 2`
 
-- <timeZone>: The time zone you want the message to be sent from. Please use the TZ identifier, you can see a list of them on this [link](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). By default it is set to Europe/Paris.\
+- \<timeZone\>: The time zone you want the message to be sent from. Please use the TZ identifier, you can see a list of them on this [link](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). By default it is set to Europe/Paris.\
 **Example:** `America/Los_Angeles`, `Europe/London`
 
 #### Examples
