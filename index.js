@@ -17,7 +17,7 @@ Client.commands = new DiscordJS.Collection();
 
 // Informations et contrôle sur le processus avec renvoi de messages d'erreur
 process.on("exit", (code) => {
-	Logger.client(`The process stoppeed with the code: ${code}!`);
+	Logger.client(`The process stopped with the code: ${code}!`);
 });
 process.on("uncaughtException", (err, origin) => {
 	Logger.error(`UNCAUGHT_EXCEPTION: ${err}`);

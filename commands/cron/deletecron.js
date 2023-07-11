@@ -14,7 +14,8 @@ module.exports = {
 	options: [
 		{
 			name: "id",
-			description: "The Id of the CRON.",
+			description:
+				"The Id of the CRON that you can find using `showallcron` command.",
 			required: true,
 			type: DiscordJS.Constants.ApplicationCommandOptionTypes.STRING,
 		},
@@ -57,6 +58,8 @@ module.exports = {
 
 					// Si le CRON existe
 					if (CronJobManager.cronJobManager.exists(cronJobId)) {
+						// On stop le CRON du manager
+						CronJobManager.cronJobManager.stop(cronJobId);
 						// On supprime le CRON du manager
 						CronJobManager.cronJobManager.deleteJob(cronJobId);
 					}

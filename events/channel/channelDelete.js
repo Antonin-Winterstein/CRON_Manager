@@ -36,7 +36,19 @@ module.exports = {
 
 				// Boucler sur tous les CRON du serveur
 				for (const cronData of crons) {
-					const { time, message, channelId, isActive, _id } = cronData;
+					const {
+						time,
+						days,
+						months,
+						daysOfWeek,
+						message,
+						channelId,
+						weekInterval,
+						startTime,
+						timeZone,
+						isActive,
+						_id,
+					} = cronData;
 
 					const cronJobId = channel.guildId + "_" + ObjectId(_id).toString();
 
