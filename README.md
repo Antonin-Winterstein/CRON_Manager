@@ -163,7 +163,7 @@ deleteallcron
 
 > NOTE: After using the command, all CRONs of your server will be deleted for ever, it is impossible to reverse the action. Please take care.
 
-#### Examples
+#### Example
 
 `deleteallcron`
 
