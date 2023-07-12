@@ -20,11 +20,11 @@ module.exports = {
 			{ multi: true }
 		);
 
-		// Constante temporaire pour le développement avec l'ID de mon serveur
-		const guild = await Client.guilds.cache.get("646033280499580948");
-		guild.commands.set(Client.commands.map((cmd) => cmd));
+		// Constante temporaire pour le développement avec l'ID du serveur de développement
+		// const guild = await Client.guilds.cache.get("Put your server ID for dev");
+		// guild.commands.set(Client.commands.map((cmd) => cmd));
 		// Déploiement en global
-		// Client.application.commands.set(Client.commands.map((cmd) => cmd));
+		Client.application.commands.set(Client.commands.map((cmd) => cmd));
 
 		// On appelle la fonction qui active les CRON
 		CronJobManager.checkForCRON(Client);
