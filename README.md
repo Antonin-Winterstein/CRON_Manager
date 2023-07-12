@@ -2,11 +2,11 @@
 
 CRON Manager is a powerful Discord bot that enables users to effortlessly schedule and automate message sending at customized intervals. Thanks to its large number of options, users can conveniently set up recurring messages, ensuring timely and consistent communication. Say goodbye to manual reminders and let CRON Manager handle your scheduling needs with ease.
  
-Is it developed in JavaScript and uses the [Discord.js API](https://discord.js.org/#/). It is combined with a [MongoDB](https://www.mongodb.com/) database to store CRONs of every server using the bot.
+Is it developed in JavaScript and uses the [Discord.js API](https://discord.js.org/#/). It is combined with a [MongoDB](https://www.mongodb.com/) database to store CRONs of every server using the BOT.
 
 ## Inviting the CRON Manager BOT to your Discord server
 
-To use my bot, please click on this invitation link and allow the permissions: To do..
+To use my BOT, please click on this invitation link and allow the permissions: To do..
 
 > WARNING : Permissions of Administrator are needed to interact with the BOT, take care of not giving them to any user if you don't want them to interact with the BOT.
 
@@ -19,7 +19,7 @@ There are a total of six commands available (following [CRUD](https://fr.wikiped
 
 ### Creating a CRON
 
-To program your first CRON, you will use the `createcron` command. There are three mandatory options for seven optional options.\
+To program your first CRON, you will use the `createcron` command. There are three mandatory options for seven optional options.
 ```
 createcron [channel] [time] [message] <days> <months> <daysOfWeek> <weekInterval> <startTime> <startMonthDay> <timeZone>
 ```
@@ -56,12 +56,12 @@ createcron [channel] [time] [message] <days> <months> <daysOfWeek> <weekInterval
  **Examples:** `1`, `1, 3, 1, 2`
 
 - \<timeZone\>: The time zone you want the message to be sent from. Please use the TZ identifier, you can see a list of them on this [link](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). By default it is set to Europe/Paris.\
-**Example:** `America/Los_Angeles`, `Europe/London`
+**Examples:** `America/Los_Angeles`, `Europe/London`
 
 #### Examples
 
 ![](readme_images/createcron_1.png)\
-| _Message sent everyday of the year at 14:00 in the channel #test_
+| _Message sent every day of the year at 14:00 in the channel #test_
 
 ![](readme_images/createcron_2.png)\
 | _Message sent every day-of-month 1, 10 and 20 at 16:30 in the channel #test_
@@ -92,7 +92,7 @@ createcron [channel] [time] [message] <days> <months> <daysOfWeek> <weekInterval
 
 ### Seeing all your CRONs
 
-To see all your CRONs, you will use the `showallcron` command. There are no options to fulfil.\
+To see all your CRONs, you will use the `showallcron` command. There are no options to fulfil.
 ```
 showallcron
 ```
@@ -114,7 +114,7 @@ showallcron
 
 ### Seeing one of your CRONs
 
-To see one of your CRONs, you will use the `showcron` command. There is only one mandatory option to fulfil.\
+To see one of your CRONs, you will use the `showcron` command. There is only one mandatory option to fulfil.
 ```
 showcron [id]
 ```
@@ -135,7 +135,7 @@ showcron [id]
 
 ### Updating one of your CRONs
 
-To update one of your CRONs, you will use the `updatecron` command. There is one mandatory options for ten optional options.\
+To update one of your CRONs, you will use the `updatecron` command. There is one mandatory options for ten optional options.
 ```
 updatecron [id] <channel> <time> <message> <days> <months> <daysOfWeek> <weekInterval> <startTime> <startMonthDay> <timeZone>
 ```
@@ -156,7 +156,7 @@ Please refer to the examples of the `createcron` command. You can update anythin
 
 ### Deleting all your CRONs
 
-To delete all your CRONs, you will use the `deleteallcron` command. There are no options to fulfil.\
+To delete all your CRONs, you will use the `deleteallcron` command. There are no options to fulfil.
 ```
 deleteallcron
 ```
@@ -169,7 +169,7 @@ deleteallcron
 
 ### Deleting one of your CRONs
 
-To delete one of your CRONs, you will use the `deletecron` command. There is only one mandatory option to fulfil.\
+To delete one of your CRONs, you will use the `deletecron` command. There is only one mandatory option to fulfil.
 ```
 deletecron [id]
 ```
