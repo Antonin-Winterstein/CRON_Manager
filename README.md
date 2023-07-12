@@ -20,7 +20,9 @@ There are a total of six commands available (following [CRUD](https://fr.wikiped
 ### Creating a CRON
 
 To program your first CRON, you will use the `createcron` command. There are three mandatory options for seven optional options.\
-```createcron [channel] [time] [message] <days> <months> <daysOfWeek> <weekInterval> <startTime> <startMonthDay> <timeZone>```
+```
+createcron [channel] [time] [message] <days> <months> <daysOfWeek> <weekInterval> <startTime> <startMonthDay> <timeZone>
+```
 
 > NOTE: After the creation, your CRON's data will be shown for two minutes with `Previous` and `Next` buttons to see the complete message if it can't be displayed completely. The `Delete` button allows you to prematurely delete the message (just the display not the actual CRON, if you want to delete the new CRON created please use `deletecron` and `deleteallcron` commands).
 
@@ -91,7 +93,9 @@ To program your first CRON, you will use the `createcron` command. There are thr
 ### Seeing all your CRONs
 
 To see all your CRONs, you will use the `showallcron` command. There are no options to fulfil.\
-```showallcron```
+```
+showallcron
+```
 
 > NOTE: After using the command, all your CRON's data will be shown for two minutes with `Previous` and `Next` buttons to travel between CRONs. If a message of one of your CRONs is too long, just use the `Next` button to see the following of the message. The `Delete` button allows you to prematurely delete the message (just the display not the actual CRON, if you want to delete CRONs please use `deletecron` and `deleteallcron` commands).
 
@@ -111,7 +115,9 @@ To see all your CRONs, you will use the `showallcron` command. There are no opti
 ### Seeing one of your CRONs
 
 To see one of your CRONs, you will use the `showcron` command. There is only one mandatory option to fulfil.\
-```showcron [id]```
+```
+showcron [id]
+```
 
 > NOTE: After using the command, the specific CRON's data will be shown for two minutes with `Previous` and `Next` buttons to see the complete message if it can't be displayed completely. The `Delete` button allows you to prematurely delete the message (just the display not the actual CRON, if you want to delete CRONs please use `deletecron` and `deleteallcron` commands).
 
@@ -130,7 +136,9 @@ To see one of your CRONs, you will use the `showcron` command. There is only one
 ### Updating one of your CRONs
 
 To update one of your CRONs, you will use the `updatecron` command. There is one mandatory options for ten optional options.\
-```updatecron [id] <channel> <time> <message> <days> <months> <daysOfWeek> <weekInterval> <startTime> <startMonthDay> <timeZone>```
+```
+updatecron [id] <channel> <time> <message> <days> <months> <daysOfWeek> <weekInterval> <startTime> <startMonthDay> <timeZone>
+```
 
 #### Options description
 
@@ -149,7 +157,9 @@ Please refer to the examples of the `createcron` command. You can update anythin
 ### Deleting all your CRONs
 
 To delete all your CRONs, you will use the `deleteallcron` command. There are no options to fulfil.\
-```deleteallcron```
+```
+deleteallcron
+```
 
 > NOTE: After using the command, all CRONs of your server will be deleted for ever, it is impossible to reverse the action. Please take care.
 
@@ -160,7 +170,9 @@ To delete all your CRONs, you will use the `deleteallcron` command. There are no
 ### Deleting one of your CRONs
 
 To delete one of your CRONs, you will use the `deletecron` command. There is only one mandatory option to fulfil.\
-```deletecron [id]```
+```
+deletecron [id]
+```
 
 > NOTE: After using the command, the specific CRON will be deleted for ever, it is impossible to reverse the action. Please take care.
 
