@@ -14,12 +14,14 @@ To use my bot, please click on this invitation link and allow the permissions: T
 
 There are a total of six commands available (following [CRUD](https://fr.wikipedia.org/wiki/CRUD) principle) to configure your CRONs and two utility commands. I will detail them for you.
 
-> NOTE : The syntax I will use for the commands are the following: {} = available subcommand(s) | [] = mandatory option(s) | <> = optional option(s). Please do not use these characters: {}, [] and <> in your commands.
+> NOTE: The syntax I will use for the commands are the following: {} = available subcommand(s) | [] = mandatory option(s) | <> = optional option(s). Please do not use these characters: {}, [] and <> in your commands.
 
-### Creating your CRON
+### Creating a CRON
 
 To program your first CRON, you will use the `createcron` command. There are three mandatory options for seven optional options.
 ```createcron [channel] [time] [message] <days> <months> <daysOfWeek> <weekInterval> <startTime> <startMonthDay> <timeZone>```
+
+> NOTE: After the creation, your CRON's data will be shown for two minutes with `Previous` and `Next` buttons to see the complete message if it can't be displayed completely. The `Delete` button allows you to prematurely delete the message (just the display not the actual CRON, if you want to delete the new CRON created please use `deletecron` and `deleteallcron` commands).
 
 #### Options description
 
@@ -54,3 +56,118 @@ To program your first CRON, you will use the `createcron` command. There are thr
 **Example:** `America/Los_Angeles`, `Europe/London`
 
 #### Examples
+
+![](readme_images/createcron_1.png)
+| _Message sent everyday of the year at 14:00 in the channel #test_
+
+![](readme_images/createcron_2.png)
+| _Message sent every day-of-month 1, 10 and 20 at 16:30 in the channel #test_
+
+![](readme_images/createcron_3.png)
+| _Message sent every day of January and September at 09:45 in the channel #test_
+
+![](readme_images/createcron_4.png)
+| _Message sent every Monday and Friday of the year at 02:00 in the channel #test_
+
+![](readme_images/createcron_5.png)
+| _Message sent every day-of-month 15, 20 and 25 of July and December at 00:00 in the channel #test_
+
+![](readme_images/createcron_6.png)
+| _Message sent every day-of-month 24 and every Tuesday at 12:00 in the channel #test_
+
+![](readme_images/createcron_7.png)
+| _Message sent every Thursday and Saturday of March at 19:07 in the channel #test_
+
+![](readme_images/createcron_8.png)
+| _Message sent every day-of-month 7 and 14 of April and August and every Monday of April and August at 08:20 in the channel #test_
+
+![](readme_images/createcron_9.png)
+| _Message sent starting from September 20, 2023 every day-of-month 4 and 17 and every two Monday at 13:15 in the America/Los_Angeles time zone in the channel #test_
+
+![](readme_images/createcron_10.png)
+| _Message sent every two Monday of February and May starting from the first Monday of February and the second Monday of May at 16:34 in the channel #test_
+
+### Seeing all your CRONs
+
+To see all your CRONs, you will use the `showallcron` command. There are no options to fulfil.
+```showallcron```
+
+> NOTE: After using the command, all your CRON's data will be shown for two minutes with `Previous` and `Next` buttons to travel between CRONs. If a message of one of your CRONs is too long, just use the `Next` button to see the following of the message. The `Delete` button allows you to prematurely delete the message (just the display not the actual CRON, if you want to delete CRONs please use `deletecron` and `deleteallcron` commands).
+
+#### Examples
+
+`showallcron`
+
+![](readme_images/showallcron_1.png)
+| _Informations of one of the CRONs of my server after using the `showallcron` command_
+
+![](readme_images/showallcron_2.png)
+| _Informations of another CRON of my server after using the `showallcron` command and clicking the `Next` button_
+
+![](readme_images/showallcron_3.png)
+| _Rest of the message of the previous CRON's picture after clicking the `Next` button_
+
+### Seeing one of your CRONs
+
+To see one of your CRONs, you will use the `showcron` command. There is only one mandatory option to fulfil.
+```showcron [id]```
+
+> NOTE: After using the command, the specific CRON's data will be shown for two minutes with `Previous` and `Next` buttons to see the complete message if it can't be displayed completely. The `Delete` button allows you to prematurely delete the message (just the display not the actual CRON, if you want to delete CRONs please use `deletecron` and `deleteallcron` commands).
+
+#### Options description
+
+- [id]: The id of the CRON you want to show. The id can be retrieved by using the `showallcron` command.\
+**Example:** `64ae9fdd4e7699251aa48201`
+
+#### Examples
+
+`showcron 64ae9fdd4e7699251aa48201`
+
+![](readme_images/showcron_1.png)
+| _Informations of one of the CRONs of my server after using the `showcron` command with the id of this CRON_
+
+### Updating one of your CRONs
+
+To update one of your CRONs, you will use the `updatecron` command. There is one mandatory options for ten optional options.
+```updatecron [id] <channel> <time> <message> <days> <months> <daysOfWeek> <weekInterval> <startTime> <startMonthDay> <timeZone>```
+
+#### Options description
+
+- [id]: The id of the CRON you want to update. The id can be retrieved by using the `showallcron` command.\
+**Example:** `64ae9fdd4e7699251aa48201`
+
+Please refer to the description of the `createcron` command for all optional options.
+
+#### Examples
+
+![](readme_images/updatecron_1.png)
+| _Updating the time the message will be sent of the CRON with id `64ae9fdd4e7699251aa48201`_
+
+Please refer to the examples of the `createcron` command. You can update anything you want except the id.
+
+### Deleting all your CRONs
+
+To delete all your CRONs, you will use the `deleteallcron` command. There are no options to fulfil.
+```deleteallcron```
+
+> NOTE: After using the command, all CRONs of your server will be deleted for ever, it is impossible to reverse the action. Please take care.
+
+#### Examples
+
+`deleteallcron`
+
+### Deleting one of your CRONs
+
+To delete one of your CRONs, you will use the `deletecron` command. There is only one mandatory option to fulfil.
+```deletecron [id]```
+
+> NOTE: After using the command, the specific CRON will be deleted for ever, it is impossible to reverse the action. Please take care.
+
+#### Options description
+
+- [id]: The id of the CRON you want to delete. The id can be retrieved by using the `showallcron` command.\
+**Example:** `64ae9fdd4e7699251aa48201`
+
+#### Example
+
+`deletecron 64ae9fdd4e7699251aa48201`
