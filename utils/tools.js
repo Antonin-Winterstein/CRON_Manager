@@ -135,7 +135,7 @@ function validateMonths(monthsInput, startMonthDayInput, weekInterval) {
 		} else {
 			return {
 				error:
-					"Please don't provide the startMonthDay option if you want to select all months.",
+					'Please don\'t provide the startMonthDay option if you want to select all months. If you really want to specify the startMonthDay of all months, please write all the months manually instead of putting "ALL".',
 			};
 		}
 	}
@@ -239,6 +239,7 @@ function validateDaysOfWeek(
 	daysOfWeekInput,
 	startTimeInput,
 	monthsInput,
+	weekInterval,
 	timeZone
 ) {
 	const daysOfWeek = [
@@ -251,19 +252,19 @@ function validateDaysOfWeek(
 		"SATURDAY",
 	];
 
-	if (monthsInput != null && startTimeInput != null) {
+	if (monthsInput != null && weekInterval != 1 && startTimeInput != null) {
 		if (monthsInput.toUpperCase() != "ALL") {
 			return {
 				error:
-					'Please don\'t provide the startTime option if you are specifying months other than "ALL" with the months option. Use the startMonthDay option instead.',
+					"Please don't provide the startTime option if you are specifying months with a weekInterval of more than 1 with the months option. Use the startMonthDay option instead.",
 			};
 		}
 	}
 
 	// Si l'utilisateur n'a pas rempli l'option startTime, alors on utilise la date actuelle par rapport à sa time zone
 	if (startTimeInput == null) {
-		// Si l'utilisateur a rempli l'option des mois, on ne peut pas utiliser le startTime
-		if (monthsInput != null) {
+		// Si l'utilisateur a rempli l'option des mois avec un intervalle de plus d'1, on ne peut pas utiliser le startTime
+		if (monthsInput != null && weekInterval != 1) {
 			startTime = null;
 		} else {
 			startTime = getCurrentDatetimeWithTimeZone(timeZone);
@@ -430,9 +431,20 @@ function getCurrentDatetimeWithTimeZone(timeZone) {
 }
 
 // Fonction pour vérifier si au moins un jour spécifié est égal au jour actuel
-function isCurrentDayOfMonth(dayNumbers, timeZone) {
+function isCurrentDayOfMonth(dayNumbers, startTime, timeZone) {
 	// Récupère la date actuelle pour le fuseau horaire spécifié
 	let currentDatetime = getCurrentDatetimeWithTimeZone(timeZone);
+
+	if (startTime != null) {
+		// Transforme les chaînes de caractères en dates
+		let initialDate = new Date(startTime);
+		let actualDate = new Date(currentDatetime);
+
+		// Vérifie que la date d'aujourd'hui est inférieur à la date de début, auquel cas on ne doit pas envoyer le message
+		if (actualDate < initialDate) {
+			return;
+		}
+	}
 
 	// Convertis la chaîne de caractères de nombres en tableau
 	let dayNumbersArray = dayNumbers.split(",");
@@ -483,10 +495,22 @@ function checkIfGoodMonthAndWeekForMessage(
 	monthsData,
 	daysOfWeekNumbers,
 	weekInterval,
+	startTime,
 	timeZone
 ) {
 	// Récupère la date actuelle pour le fuseau horaire spécifié
 	let currentDatetime = getCurrentDatetimeWithTimeZone(timeZone);
+
+	if (startTime != null) {
+		// Transforme les chaînes de caractères en dates
+		let initialDate = new Date(startTime);
+		let actualDate = new Date(currentDatetime);
+
+		// Vérifie que la date d'aujourd'hui est inférieur à la date de début, auquel cas on ne doit pas envoyer le message
+		if (actualDate < initialDate) {
+			return;
+		}
+	}
 
 	// Extrait l'année de la date actuelle
 	let currentYear = parseInt(currentDatetime.split("-")[0], 10);
@@ -500,6 +524,11 @@ function checkIfGoodMonthAndWeekForMessage(
 	// Convertis la chaîne de caractères des daysOfWeek en tableau
 	let daysOfWeekNumbersArray = daysOfWeekNumbers.split(",");
 
+	// Si l'utilisateur a sélectionné tous les jours avec "ALL", on met le chiffre de chaque jour (de 0 à 6)
+	if (daysOfWeekNumbersArray.length == 1 && daysOfWeekNumbersArray[0] == "*") {
+		daysOfWeekNumbersArray = ["0", "1", "2", "3", "4", "5", "6"];
+	}
+
 	// Boucle dans le tableau des numéros de mois
 	for (let i = 0; i < monthNumbersArray.length; i++) {
 		let monthNumber = parseInt(monthNumbersArray[i].trim(), 10);
@@ -512,9 +541,9 @@ function checkIfGoodMonthAndWeekForMessage(
 				let startDayOccurence = startDay;
 				let targetDay = parseInt(daysOfWeekNumbersArray[j].trim(), 10);
 
-				// A day can be maxiumum seen 5 times a month
+				// Une journée peut être vue au maximum 5 fois lors d'un mois
 				while (startDayOccurence <= 5) {
-					// On récupère la date pour le jour, mois et année donnée sur une l'occurence actuelle
+					// On récupère la date pour le jour, mois et année donnée sur l'occurence actuelle
 					let dayOfMonth = getSpecificDayOfMonth(
 						currentYear,
 						currentMonth,
@@ -540,38 +569,42 @@ function checkIfGoodMonthAndWeekForMessage(
 }
 
 // Fonction pour vérifier si le message doit s'envoyer sur la semaine actuelle
-function checkWeekInterval(initialDate, actualDate, weekInterval) {
-	// Transforme les chaînes de caractères en dates
-	initialDate = new Date(initialDate);
-	actualDate = new Date(actualDate);
+function checkWeekInterval(startTime, currentDatetime, weekInterval) {
+	if (startTime != null) {
+		// Transforme les chaînes de caractères en dates
+		let initialDate = new Date(startTime);
+		let actualDate = new Date(currentDatetime);
 
-	// Vérifie que la date d'aujourd'hui est supérieure ou égale à la date de début
-	if (actualDate >= initialDate) {
-		// Convertis les dates en UTC pour éviter les problèmes de fuseau horaire
-		const utc1 = Date.UTC(
-			initialDate.getFullYear(),
-			initialDate.getMonth(),
-			initialDate.getDate()
-		);
-		const utc2 = Date.UTC(
-			actualDate.getFullYear(),
-			actualDate.getMonth(),
-			actualDate.getDate()
-		);
-
-		// Calcule la différence en millisecondes
-		const millisecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
-		const timeDiff = Math.abs(utc2 - utc1);
-
-		// Calcule le nombre de semaines
-		const weeks = Math.floor(timeDiff / millisecondsPerWeek);
-
-		// Vérifie si le message peut s'envoyer sur la semaine actuelle
-		if (weeks % weekInterval == 0) {
-			return true;
-		} else {
-			return false;
+		// Vérifie que la date d'aujourd'hui est inférieur à la date de début, auquel cas on ne doit pas envoyer le message
+		if (actualDate < initialDate) {
+			return;
 		}
+	}
+
+	// Convertis les dates en UTC pour éviter les problèmes de fuseau horaire
+	const utc1 = Date.UTC(
+		initialDate.getFullYear(),
+		initialDate.getMonth(),
+		initialDate.getDate()
+	);
+	const utc2 = Date.UTC(
+		actualDate.getFullYear(),
+		actualDate.getMonth(),
+		actualDate.getDate()
+	);
+
+	// Calcule la différence en millisecondes
+	const millisecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
+	const timeDiff = Math.abs(utc2 - utc1);
+
+	// Calcule le nombre de semaines
+	const weeks = Math.floor(timeDiff / millisecondsPerWeek);
+
+	// Vérifie si le message peut s'envoyer sur la semaine actuelle
+	if (weeks % weekInterval == 0) {
+		return true;
+	} else {
+		return false;
 	}
 }
 

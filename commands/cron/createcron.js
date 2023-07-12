@@ -48,21 +48,21 @@ module.exports = {
 		{
 			name: "days",
 			description:
-				'Separate each days you want by commas or put "ALL". If not specified, it will be sent every day.',
+				'Separate each day you want by commas or put "ALL". If not specified, it will be sent every day.',
 			required: false,
 			type: DiscordJS.Constants.ApplicationCommandOptionTypes.STRING,
 		},
 		{
 			name: "months",
 			description:
-				'Separate each months you want by commas or put "ALL". If not specified, it will be sent every month.',
+				'Separate each month you want by commas or put "ALL". If not specified, it will be sent every month.',
 			required: false,
 			type: DiscordJS.Constants.ApplicationCommandOptionTypes.STRING,
 		},
 		{
 			name: "daysofweek",
 			description:
-				'Separate each days of the week by commas or put "ALL". If not specified, it will be sent every day.',
+				'Separate each day of the week by commas or put "ALL". If not specified, it will be sent every day.',
 			required: false,
 			type: DiscordJS.Constants.ApplicationCommandOptionTypes.STRING,
 		},
@@ -76,7 +76,7 @@ module.exports = {
 		{
 			name: "starttime",
 			description:
-				"The date to start from (format: YYYY-MM-DD). Current date by default, only if months isn't used.",
+				"The date to start from (format: YYYY-MM-DD). Current date by default.",
 			required: false,
 			type: DiscordJS.Constants.ApplicationCommandOptionTypes.STRING,
 		},
@@ -128,6 +128,7 @@ module.exports = {
 			sentDaysOfWeek,
 			sentStartTime,
 			sentMonths,
+			weekInterval,
 			timeZone
 		);
 
@@ -187,7 +188,7 @@ module.exports = {
 					const pages = [];
 					// Variable pour afficher la page actuelle
 					let currentPage = 0;
-					// Format des mois comme-ci: Mois (startDay)...
+					// Format des mois comme-ci: Mois (startMonthDay)...
 					let formattedMonths = months.map(function (item) {
 						let startDayString;
 						// Si startDay est à null, on explique à l'user
@@ -196,7 +197,7 @@ module.exports = {
 						} else {
 							startDayString = item.startDay;
 						}
-						return item.month + " (Starting day: " + startDayString + ")";
+						return item.month + " (Start month day: " + startDayString + ")";
 					});
 					formattedMonths = formattedMonths.join(",");
 
@@ -204,7 +205,7 @@ module.exports = {
 					let startTimeString;
 					if (daysOfWeek.startTime == null) {
 						startTimeString =
-							"Can't be used if months are specified. Using startDay instead.";
+							"Can't be used if months are specified with a weekInterval of more than 1. Using startMonthDay instead.";
 					} else {
 						startTimeString = daysOfWeek.startTime;
 					}
@@ -347,6 +348,16 @@ module.exports = {
 		}
 		// Si les formats pour "message", "time", "days", "months", "daysOfWeek" et "timezone" ne sont pas respectés
 		else {
+			if (sentTime.match(timeRegex) == null) {
+				// On indique que le format pour "time" n'est pas bon
+				interaction.reply({
+					content:
+						"The format of the time you sent is wrong, it should be like this: **HH:mm** (Example: 09:21)",
+					ephemeral: true,
+				});
+				return;
+			}
+
 			if (sentMessage.length > 2000) {
 				// On indique que l'utilisateur a dépassé la limite de caractères disponibles
 				interaction.reply({
@@ -356,57 +367,54 @@ module.exports = {
 						" long.",
 					ephemeral: true,
 				});
-			}
-
-			if (sentTime.match(timeRegex) == null) {
-				// On indique que le format pour "time" n'est pas bon
-				interaction.reply({
-					content:
-						"The format of the time you sent is wrong, it should be like this: **HH:mm** (Example: 09:21)",
-					ephemeral: true,
-				});
+				return;
 			}
 
 			// Si le format pour "weekInterval" n'est pas respecté
-			else if (weekInterval.hasOwnProperty("error")) {
+			if (weekInterval.hasOwnProperty("error")) {
 				interaction.reply({
 					content: weekInterval.error,
 					ephemeral: true,
 				});
+				return;
 			}
 
 			// Si le format pour "days" n'est pas respecté
-			else if (days.hasOwnProperty("error")) {
+			if (days.hasOwnProperty("error")) {
 				interaction.reply({
 					content: days.error,
 					ephemeral: true,
 				});
+				return;
 			}
 
 			// Si le format pour "months" n'est pas respecté
-			else if (months.hasOwnProperty("error")) {
+			if (months.hasOwnProperty("error")) {
 				interaction.reply({
 					content: months.error,
 					ephemeral: true,
 				});
+				return;
 			}
 
 			// Si le format pour "daysOfWeek" n'est pas respecté
-			else if (daysOfWeek.hasOwnProperty("error")) {
+			if (daysOfWeek.hasOwnProperty("error")) {
 				interaction.reply({
 					content: daysOfWeek.error,
 					ephemeral: true,
 				});
+				return;
 			}
 
 			// Si la time zone est invalide, on l'indique à l'utilisateur
-			else if (timeZone == false) {
+			if (timeZone == false) {
 				// On indique que la time zone est invalide
 				interaction.reply({
 					content:
 						"The format of the time zone you sent is wrong, please enter a valid time zone. The format should be like this: **Time zone identifier** (Example: Europe/Paris). Here is the list of time zones: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones",
 					ephemeral: true,
 				});
+				return;
 			}
 		}
 	},

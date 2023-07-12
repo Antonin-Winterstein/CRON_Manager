@@ -89,7 +89,7 @@ module.exports = {
 							} else {
 								startDayString = item.startDay;
 							}
-							return item.month + " (Starting day: " + startDayString + ")";
+							return item.month + " (Start month day: " + startDayString + ")";
 						});
 						formattedMonths = formattedMonths.join(",");
 
@@ -97,7 +97,7 @@ module.exports = {
 						let startTimeString;
 						if (startTime == null) {
 							startTimeString =
-								"Can't be used if months are specified. Using startDay instead.";
+								"Can't be used if months are specified with a weekInterval of more than 1. Using startMonthDay instead.";
 						} else {
 							startTimeString = startTime;
 						}

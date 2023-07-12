@@ -102,7 +102,10 @@ const checkForCRON = async (Client) => {
 						else {
 							// Vérifie si le jour actuel correspond à un jour spécifié (afin de différencier avec "daysOfWeek"), auquel cas on envoie le message dans tous les cas
 							if (daysConverted != "*") {
-								if (isCurrentDayOfMonth(daysConverted, timeZone) == true) {
+								if (
+									isCurrentDayOfMonth(daysConverted, startTime, timeZone) ==
+									true
+								) {
 									channel.send(message);
 									isMessageSent = true;
 								}
@@ -114,6 +117,7 @@ const checkForCRON = async (Client) => {
 										monthsData,
 										daysOfWeekToNumbers,
 										weekInterval,
+										startTime,
 										timeZone
 									) == true
 								) {

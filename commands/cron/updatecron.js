@@ -63,21 +63,21 @@ module.exports = {
 		{
 			name: "days",
 			description:
-				'Separate each days you want by commas or put "ALL". If not specified, it will be sent every day.',
+				'Separate each day you want by commas or put "ALL". If not specified, it will be sent every day.',
 			required: false,
 			type: DiscordJS.Constants.ApplicationCommandOptionTypes.STRING,
 		},
 		{
 			name: "months",
 			description:
-				'Separate each months you want by commas or put "ALL". If not specified, it will be sent every month.',
+				'Separate each month you want by commas or put "ALL". If not specified, it will be sent every month.',
 			required: false,
 			type: DiscordJS.Constants.ApplicationCommandOptionTypes.STRING,
 		},
 		{
 			name: "daysofweek",
 			description:
-				'Separate each days of the week by commas or put "ALL". If not specified, it will be sent every day.',
+				'Separate each day of the week by commas or put "ALL". If not specified, it will be sent every day.',
 			required: false,
 			type: DiscordJS.Constants.ApplicationCommandOptionTypes.STRING,
 		},
@@ -91,7 +91,7 @@ module.exports = {
 		{
 			name: "starttime",
 			description:
-				"The date to start from (format: YYYY-MM-DD). Current date by default, only if months isn't used.",
+				"The date to start from (format: YYYY-MM-DD). Current date by default.",
 			required: false,
 			type: DiscordJS.Constants.ApplicationCommandOptionTypes.STRING,
 		},
@@ -168,80 +168,6 @@ module.exports = {
 							_id,
 						} = cronData;
 
-						// Regex qui permet de respecter le format HH:MM
-						let timeRegex = "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$";
-
-						// Vérifie que l'input de l'utilisateur pour le week interval est valide, utilise les valeurs de la BDD si le champs n'a pas été spécifié
-						let weekIntervalValidated = validateWeekInterval(
-							sentWeekInterval ?? weekInterval
-						);
-
-						let daysArrayToString = days.join(",");
-						// Vérifie que l'input de l'utilisateur pour les jours est valide, utilise les valeurs de la BDD si le champs n'a pas été spécifié
-						let daysValidated = validateDays(sentDays ?? daysArrayToString);
-
-						let monthsArrayToString;
-						let startDayArrayToString;
-						// Vérifie si tous les mois sont sélectionnés
-						if (
-							months.length === 1 &&
-							months[0].month === "ALL" &&
-							months[0].startDay === null
-						) {
-							monthsArrayToString = null;
-							startDayArrayToString = null;
-						} else {
-							// Reconvertis le tableau de la BDD en une chaîne pour la fonction
-							monthsArrayToString = months.map((item) => item.month).join(",");
-
-							// Si 'utilisateur a spécifié vouloir tous les mois
-							if (sentMonths != null) {
-								if (sentMonths.toUpperCase() == "ALL") {
-									startDayArrayToString = null;
-								}
-							}
-
-							// Si toutes les valeurs "startDay" sont égales à null ou que "weekInterval" est égale à 1, on met null
-							else if (
-								months.every((item) => item.startDay === null) ||
-								weekIntervalValidated == 1
-							) {
-								startDayArrayToString = null;
-							} else {
-								// Reconvertis le tableau de la BDD en une chaîne pour la fonction
-								startDayArrayToString = months
-									.map((item) => item.startDay)
-									.join(",");
-							}
-						}
-
-						// Vérifie que l'input de l'utilisateur pour les mois et startMonthDay sont valides par rapport à l'intervalle donné, utilise les valeurs de la BDD si le champs n'a pas été spécifié
-						let monthsValidated = validateMonths(
-							sentMonths ?? monthsArrayToString,
-							sentStartMonthDay ?? startDayArrayToString,
-							sentWeekInterval ?? weekInterval
-						);
-
-						// Vérifie que l'input de l'utilisateur pour la time zone est valide, utilise les valeurs de la BDD si le champs n'a pas été spécifié
-						let sentTimeZoneValidated = isValidTimeZone(
-							sentTimeZone ?? timeZone
-						);
-
-						let startTimeString;
-						// Si l'utilisateur a rempli l'option des mois, alors il faut mettre startTime à null
-						if (sentMonths != null) {
-							startTimeString = null;
-						}
-
-						let daysofWeekToString = daysOfWeek.join(",");
-						// Vérifie que l'input de l'utilisateur pour les jours de la semaine est valide
-						let daysOfWeekValidated = validateDaysOfWeek(
-							sentDaysOfWeek ?? daysofWeekToString,
-							sentStartTime ?? startTimeString,
-							sentMonths ?? monthsArrayToString,
-							sentTimeZoneValidated
-						);
-
 						// Si aucun champ facultatif n'a été saisi, on indique à l'utilisateur qu'il n'y a pas eu de modifications
 						if (
 							sentChannel === null &&
@@ -260,68 +186,157 @@ module.exports = {
 									"The CRON hasn't been modified since you haven't filled any fields.",
 								ephemeral: true,
 							});
-						}
-						// Si la longueur maximale du message n'est pas respectée
-						else if (sentMessage != null && sentMessage.length > 2000) {
-							// On indique que la longueur n'est pas bonne
-							interaction.reply({
-								content:
-									"Your message is too long. It should be maximum 2000 characters but your message is actually " +
-									sentMessage.length +
-									" long.",
-								ephemeral: true,
-							});
-						}
-						// Si le format pour "time" n'est pas respecté
-						else if (sentTime != null && sentTime.match(timeRegex) == null) {
-							// On indique que le format n'est pas le bon
-							interaction.reply({
-								content:
-									"The format of the time you sent is wrong, it should be like this: **HH:mm** (Example: 09:21)",
-								ephemeral: true,
-							});
-						}
-
-						// Si le format pour "weekInterval" n'est pas respecté
-						else if (weekIntervalValidated.hasOwnProperty("error")) {
-							interaction.reply({
-								content: weekIntervalValidated.error,
-								ephemeral: true,
-							});
-						}
-
-						// Si le format pour "days" n'est pas respecté
-						else if (daysValidated.hasOwnProperty("error")) {
-							interaction.reply({
-								content: daysValidated.error,
-								ephemeral: true,
-							});
-						}
-
-						// Si le format pour "months" n'est pas respecté
-						else if (monthsValidated.hasOwnProperty("error")) {
-							interaction.reply({
-								content: monthsValidated.error,
-								ephemeral: true,
-							});
-						}
-
-						// Si le format pour "daysOfWeek" n'est pas respecté
-						else if (daysOfWeekValidated.hasOwnProperty("error")) {
-							interaction.reply({
-								content: daysOfWeekValidated.error,
-								ephemeral: true,
-							});
-						}
-						// Si le format pour "timeZone" n'est pas respecté
-						else if (sentTimeZoneValidated == false) {
-							// On indique que la time zone est invalide
-							interaction.reply({
-								content:
-									"The format of the time zone you sent is wrong, please enter a valid time zone. The format should be like this: **Time zone identifier** (Example: Europe/Paris). Here is the list of time zones: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones",
-								ephemeral: true,
-							});
+							return;
 						} else {
+							// Regex qui permet de respecter le format HH:MM
+							let timeRegex = "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$";
+
+							if (sentTime != null && sentTime.match(timeRegex) == null) {
+								// On indique que le format n'est pas le bon
+								interaction.reply({
+									content:
+										"The format of the time you sent is wrong, it should be like this: **HH:mm** (Example: 09:21)",
+									ephemeral: true,
+								});
+								return;
+							}
+
+							// Si la longueur maximale du message n'est pas respectée
+							if (sentMessage != null && sentMessage.length > 2000) {
+								// On indique que la longueur n'est pas bonne
+								interaction.reply({
+									content:
+										"Your message is too long. It should be maximum 2000 characters but your message is actually " +
+										sentMessage.length +
+										" long.",
+									ephemeral: true,
+								});
+								return;
+							}
+
+							// Vérifie que l'input de l'utilisateur pour le week interval est valide, utilise les valeurs de la BDD si le champs n'a pas été spécifié
+							let weekIntervalValidated = validateWeekInterval(
+								sentWeekInterval ?? weekInterval
+							);
+
+							// Si le format pour "weekInterval" n'est pas respecté
+							if (weekIntervalValidated.hasOwnProperty("error")) {
+								interaction.reply({
+									content: weekIntervalValidated.error,
+									ephemeral: true,
+								});
+								return;
+							}
+
+							let daysArrayToString = days.join(",");
+							// Vérifie que l'input de l'utilisateur pour les jours est valide, utilise les valeurs de la BDD si le champs n'a pas été spécifié
+							let daysValidated = validateDays(sentDays ?? daysArrayToString);
+
+							// Si le format pour "days" n'est pas respecté
+							if (daysValidated.hasOwnProperty("error")) {
+								interaction.reply({
+									content: daysValidated.error,
+									ephemeral: true,
+								});
+								return;
+							}
+
+							let monthsArrayToString;
+							let startDayArrayToString;
+							// Vérifie si tous les mois sont sélectionnés
+							if (
+								months.length === 1 &&
+								months[0].month === "ALL" &&
+								months[0].startDay === null
+							) {
+								monthsArrayToString = null;
+								startDayArrayToString = null;
+							} else {
+								// Reconvertis le tableau de la BDD en une chaîne pour la fonction
+								monthsArrayToString = months
+									.map((item) => item.month)
+									.join(",");
+
+								// Si l'utilisateur a spécifié vouloir tous les mois
+								if (sentMonths != null) {
+									if (sentMonths.toUpperCase() == "ALL") {
+										startDayArrayToString = null;
+									}
+								}
+								// Si toutes les valeurs "startDay" sont égales à null ou que "weekInterval" est égale à 1, on met null
+								else if (
+									months.every((item) => item.startDay === null) ||
+									weekIntervalValidated == 1
+								) {
+									startDayArrayToString = null;
+								} else {
+									// Reconvertis le tableau de la BDD en une chaîne pour la fonction
+									startDayArrayToString = months
+										.map((item) => item.startDay)
+										.join(",");
+								}
+							}
+
+							// Vérifie que l'input de l'utilisateur pour les mois et startMonthDay sont valides par rapport à l'intervalle donné, utilise les valeurs de la BDD si le champs n'a pas été spécifié
+							let monthsValidated = validateMonths(
+								sentMonths ?? monthsArrayToString,
+								sentStartMonthDay ?? startDayArrayToString,
+								sentWeekInterval ?? weekInterval
+							);
+
+							// Si le format pour "months" n'est pas respecté
+							if (monthsValidated.hasOwnProperty("error")) {
+								interaction.reply({
+									content: monthsValidated.error,
+									ephemeral: true,
+								});
+								return;
+							}
+
+							// Vérifie que l'input de l'utilisateur pour la time zone est valide, utilise les valeurs de la BDD si le champs n'a pas été spécifié
+							let sentTimeZoneValidated = isValidTimeZone(
+								sentTimeZone ?? timeZone
+							);
+
+							if (sentTimeZoneValidated == false) {
+								// On indique que la time zone est invalide
+								interaction.reply({
+									content:
+										"The format of the time zone you sent is wrong, please enter a valid time zone. The format should be like this: **Time zone identifier** (Example: Europe/Paris). Here is the list of time zones: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones",
+									ephemeral: true,
+								});
+								return;
+							}
+
+							let startTimeString = startTime;
+							// Si la valeur du premier mois est différent de "ALL" et que weekInterval est différent de 1, alors il faut mettre startTime à null
+							if (
+								monthsValidated[0].month.toUpperCase() != "ALL" &&
+								((sentWeekInterval != null && sentWeekInterval != 1) ||
+									(sentWeekInterval == null && weekInterval != 1))
+							) {
+								startTimeString = null;
+							}
+
+							let daysofWeekToString = daysOfWeek.join(",");
+							// Vérifie que l'input de l'utilisateur pour les jours de la semaine est valide
+							let daysOfWeekValidated = validateDaysOfWeek(
+								sentDaysOfWeek ?? daysofWeekToString,
+								sentStartTime ?? startTimeString,
+								sentMonths ?? monthsArrayToString,
+								sentWeekInterval ?? weekInterval,
+								sentTimeZoneValidated
+							);
+
+							// Si le format pour "daysOfWeek" n'est pas respecté
+							if (daysOfWeekValidated.hasOwnProperty("error")) {
+								interaction.reply({
+									content: daysOfWeekValidated.error,
+									ephemeral: true,
+								});
+								return;
+							}
+
 							// Si l'utilisateur n'a pas rempli l'option "channel", on remet celui de base qu'on retrouve en BDD
 							if (sentChannel == null) {
 								sentChannel = channelId;
@@ -380,20 +395,30 @@ module.exports = {
 
 							// Si l'utilisateur n'a pas rempli l'option "startTime", on remet celui de base qu'on retrouve en BDD
 							if (sentStartTime == null) {
-								sentStartTime = startTime;
-								// Si la valeur du premier mois est à "ALL" alors on remet le startTime, sinon on le met à null
-								if (sentMonths[0].month.toUpperCase() == "ALL") {
+								// Si la valeur du premier mois est différent de "ALL" et que weekInterval est différent de 1, alors on met le startTime à null, sinon on le remet
+								if (
+									sentMonths[0].month.toUpperCase() != "ALL" &&
+									sentWeekInterval != 1
+								) {
+									sentStartTime = null;
+								} else {
 									if (startTime == null) {
 										sentStartTime =
 											getCurrentDatetimeWithTimeZone(sentTimeZone);
 									} else {
 										sentStartTime = startTime;
 									}
-								} else {
-									sentStartTime = null;
 								}
 							} else {
-								sentStartTime = daysOfWeekValidated.startTime;
+								// Si la valeur du premier mois est différent de "ALL" et que weekInterval est différent de 1, alors on met le startTime à null, sinon on le remet
+								if (
+									sentMonths[0].month.toUpperCase() != "ALL" &&
+									sentWeekInterval != 1
+								) {
+									sentStartTime = null;
+								} else {
+									sentStartTime = daysOfWeekValidated.startTime;
+								}
 							}
 
 							// On modifie le CRON de la BDD avec les valeurs saisies par l'utilisateur
@@ -468,7 +493,11 @@ module.exports = {
 										// Vérifie si le jour actuel correspond à un jour spécifié (afin de différencier avec "daysOfWeek"), auquel cas on envoie le message dans tous les cas
 										if (daysConverted != "*") {
 											if (
-												isCurrentDayOfMonth(daysConverted, sentTimeZone) == true
+												isCurrentDayOfMonth(
+													daysConverted,
+													sentStartTime,
+													sentTimeZone
+												) == true
 											) {
 												guild.channels.cache.get(sentChannel).send(sentMessage);
 												isMessageSent = true;
@@ -481,6 +510,7 @@ module.exports = {
 													monthsData,
 													daysOfWeekToNumbers,
 													sentWeekInterval,
+													sentStartTime,
 													sentTimeZone
 												) == true
 											) {
