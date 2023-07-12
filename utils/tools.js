@@ -616,12 +616,14 @@ async function pagination(interaction, pages) {
 				.setCustomId("prev")
 				.setLabel("Previous")
 				.setStyle("PRIMARY")
-				.setEmoji("⬅️"),
+				.setEmoji("⬅️")
+				.setDisabled(true), // Désactive le bouton "Previous" dans un premier temps
 			new MessageButton()
 				.setCustomId("next")
 				.setLabel("Next")
 				.setStyle("PRIMARY")
-				.setEmoji("➡️"),
+				.setEmoji("➡️")
+				.setDisabled(pages.length === 1), // Désactive le bouton  "Next" s'il y a seulement une page
 			new MessageButton()
 				.setCustomId("delete")
 				.setLabel("Delete")
@@ -663,16 +665,16 @@ async function pagination(interaction, pages) {
 			return;
 		}
 
-		// Gère les pages (si on appuie sur précédent en étant sur le premier, alors on va à la dernière page et inversement)
-		if (currentPageIndex < 0) {
-			currentPageIndex = pages.length - 1;
-		} else if (currentPageIndex >= pages.length) {
-			currentPageIndex = 0;
-		}
+		// Met à jour l'état désactivé des boutons "Previous" et "Next" en fonction de l'index de la page en cours
+		components[0].components[0].setDisabled(currentPageIndex === 0);
+		components[0].components[1].setDisabled(
+			currentPageIndex === pages.length - 1
+		);
 
 		// Met à jour la réponse d'interaction avec la nouvelle page
 		await i.update({
 			embeds: [pages[currentPageIndex]],
+			components: components,
 		});
 	});
 
