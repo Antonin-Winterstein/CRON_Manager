@@ -184,3 +184,11 @@ deletecron [id]
 #### Example
 
 `deletecron 64ae9fdd4e7699251aa48201`
+
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+## Contact
+
+Antonin Winterstein - antonin.winterstein@gmail.com
