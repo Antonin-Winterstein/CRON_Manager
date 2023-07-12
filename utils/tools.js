@@ -570,41 +570,39 @@ function checkIfGoodMonthAndWeekForMessage(
 
 // Fonction pour vérifier si le message doit s'envoyer sur la semaine actuelle
 function checkWeekInterval(startTime, currentDatetime, weekInterval) {
-	if (startTime != null) {
-		// Transforme les chaînes de caractères en dates
-		let initialDate = new Date(startTime);
-		let actualDate = new Date(currentDatetime);
+	// Transforme les chaînes de caractères en dates
+	let initialDate = new Date(startTime);
+	let actualDate = new Date(currentDatetime);
 
-		// Vérifie que la date d'aujourd'hui est inférieur à la date de début, auquel cas on ne doit pas envoyer le message
-		if (actualDate < initialDate) {
-			return;
-		}
-	}
-
-	// Convertis les dates en UTC pour éviter les problèmes de fuseau horaire
-	const utc1 = Date.UTC(
-		initialDate.getFullYear(),
-		initialDate.getMonth(),
-		initialDate.getDate()
-	);
-	const utc2 = Date.UTC(
-		actualDate.getFullYear(),
-		actualDate.getMonth(),
-		actualDate.getDate()
-	);
-
-	// Calcule la différence en millisecondes
-	const millisecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
-	const timeDiff = Math.abs(utc2 - utc1);
-
-	// Calcule le nombre de semaines
-	const weeks = Math.floor(timeDiff / millisecondsPerWeek);
-
-	// Vérifie si le message peut s'envoyer sur la semaine actuelle
-	if (weeks % weekInterval == 0) {
-		return true;
+	// Vérifie que la date d'aujourd'hui est inférieur à la date de début, auquel cas on ne doit pas envoyer le message
+	if (actualDate < initialDate) {
+		return;
 	} else {
-		return false;
+		// Convertis les dates en UTC pour éviter les problèmes de fuseau horaire
+		const utc1 = Date.UTC(
+			initialDate.getFullYear(),
+			initialDate.getMonth(),
+			initialDate.getDate()
+		);
+		const utc2 = Date.UTC(
+			actualDate.getFullYear(),
+			actualDate.getMonth(),
+			actualDate.getDate()
+		);
+
+		// Calcule la différence en millisecondes
+		const millisecondsPerWeek = 1000 * 60 * 60 * 24 * 7;
+		const timeDiff = Math.abs(utc2 - utc1);
+
+		// Calcule le nombre de semaines
+		const weeks = Math.floor(timeDiff / millisecondsPerWeek);
+
+		// Vérifie si le message peut s'envoyer sur la semaine actuelle
+		if (weeks % weekInterval == 0) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 
