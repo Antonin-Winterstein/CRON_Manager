@@ -6,7 +6,7 @@ Is it developed in JavaScript and uses the [Discord.js API](https://discord.js.o
 
 ## Inviting the CRON Manager BOT to your Discord server
 
-To use my BOT, please click on this invitation link and allow the permissions: To do..
+To use my BOT, please click on this invitation link and allow the permissions: https://discord.com/api/oauth2/authorize?client_id=951578400542310491&permissions=8&scope=applications.commands%20bot
 
 > WARNING : Permissions of Administrator are needed to interact with the BOT, take care of not giving them to any user if you don't want them to interact with the BOT.
 
